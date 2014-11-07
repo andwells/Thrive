@@ -1,0 +1,8 @@
+C:\Users\Andrew\Desktop\Fitbit.NET-master\Fitbit.NET-master\Fitbit\bin\Debug\Fitbit.dll.config
+C:\Users\Andrew\Desktop\Fitbit.NET-master\Fitbit.NET-master\Fitbit\bin\Debug\Fitbit.dll
+C:\Users\Andrew\Desktop\Fitbit.NET-master\Fitbit.NET-master\Fitbit\bin\Debug\Fitbit.pdb
+C:\Users\Andrew\Desktop\Fitbit.NET-master\Fitbit.NET-master\Fitbit\bin\Debug\RestSharp.dll
+C:\Users\Andrew\Desktop\Fitbit.NET-master\Fitbit.NET-master\Fitbit\bin\Debug\RestSharp.xml
+C:\Users\Andrew\Desktop\Fitbit.NET-master\Fitbit.NET-master\Fitbit\obj\Debug\Fitbit.dll
+C:\Users\Andrew\Desktop\Fitbit.NET-master\Fitbit.NET-master\Fitbit\obj\Debug\Fitbit.pdb
+C:\Users\Andrew\Desktop\Fitbit.NET-master\Fitbit.NET-master\Fitbit\obj\Debug\Fitbit.csprojResolveAssemblyReference.cache
