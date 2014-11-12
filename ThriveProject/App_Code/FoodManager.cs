@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.UI.WebControls;
+using System.Web.UI;
+using System.Collections;
 
 /// <summary>
 /// Summary description for FoodManager
@@ -23,20 +25,28 @@ public class FoodManager : ISearchableDataManager
 
     List<string> ISearchableDataManager.searchByType(string type)
     {
+        DataView x;
         if (type.Equals("restaurant"))
         {
-            //execute search in API/Official DB
+            x = (DataView) dsAPI.Select(DataSourceSelectArguments.Empty);
+            
         }
         else
         {
-            //execute search in local DB
+            x = (DataView)dsLocal.Select(DataSourceSelectArguments.Empty);
+            
         }
+        //Bind display
+        //Bind value
+        //Bind data
+        
         return null;
     }
 
     List<string> ISearchableDataManager.searchByCategory(string category)
     {
-        throw new NotImplementedException();
+
+        return null;
     }
 
     object IDataManager.Get(object g)
@@ -54,13 +64,14 @@ public class FoodManager : ISearchableDataManager
         //Food x;
         if (u != null && u.GetType().Name.Equals("Food"))
         {
-            //x = (Food)u;
-            //Do Update statement
+            Food temp = (Food)u;
+            
+
             return null;
         }
         else
         {
-            return null;
+            return false;
 
         }
     }
@@ -72,7 +83,21 @@ public class FoodManager : ISearchableDataManager
 
     List<string> IDataManager.Search(string name)
     {
-        throw new NotImplementedException();
+        int totalItems = 0;
+        IDataReader apiResult = (IDataReader)dsAPI.Select(DataSourceSelectArguments.Empty);
+        IDataReader result2 = (IDataReader)dsLocal.Select(DataSourceSelectArguments.Empty);
+
+        //Test what happens if we read use DataReader or DataView
+
+        while (apiResult.Read())
+        {
+            
+        }
+
+        
+
+
+        return null; 
     }
 
     bool IDataManager.Close()

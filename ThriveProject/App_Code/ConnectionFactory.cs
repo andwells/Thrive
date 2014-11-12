@@ -20,7 +20,6 @@ public class ConnectionFactory
             con = new SqlConnection();
             con.ConnectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
             cmd = new SqlCommand();
-
         }
         else
         {
@@ -29,6 +28,7 @@ public class ConnectionFactory
             cmd = new SqlCommand();
         }
         cmd.Connection = con;
+
         return cmd;
     }
 }
