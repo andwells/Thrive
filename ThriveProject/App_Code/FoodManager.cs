@@ -16,11 +16,13 @@ public class FoodManager : ISearchableDataManager
     private IDbCommand localConnection;
     private SqlDataSource dsAPI;
     private SqlDataSource dsLocal;
+    private Guid id;
 
-	public FoodManager(SqlDataSource local, SqlDataSource API)
+	public FoodManager(SqlDataSource local, SqlDataSource API, Guid userID)
 	{
         dsAPI = API;
         dsLocal = local;
+        id = userID;
 	}
 
     List<string> ISearchableDataManager.searchByType(string type)
@@ -51,12 +53,45 @@ public class FoodManager : ISearchableDataManager
 
     object IDataManager.Get(object g)
     {
-        throw new NotImplementedException();
+        if(g.GetType().Name.Equals("String"))
+        {
+            SqlDataSource tempDS;
+            String[] items = ((String)g).Split(';');
+            if (items[0].Equals("local"))
+            {
+                tempDS = dsLocal;
+
+                tempDS.SelectCommand = "GetFood";
+                tempDS.SelectCommandType = SqlDataSourceCommandType.StoredProcedure;
+            }
+            else
+            {
+                tempDS = dsAPI;
+            }
+            tempDS.SelectParameters[0].DefaultValue = items[1];
+            IDataReader results = (IDataReader)tempDS.Select(DataSourceSelectArguments.Empty);
+
+            results.Read();
+            return new Food(results.GetInt32(0), results.GetInt32(1), results.GetString(2), new List<String>(results.GetString(3).Split(';')), results.GetInt32(4));            
+        }
+        return null;
     }
 
     object IDataManager.Add(object a)
     {
-        throw new NotImplementedException();
+        if(a.GetType().Name.Equals("Food"))
+        {
+            Food temp = (Food)a;
+            dsLocal.InsertParameters[0].DefaultValue = id.ToString();
+            dsLocal.InsertParameters[1].DefaultValue = temp.Name;
+            dsLocal.InsertParameters[2].DefaultValue = temp.CalorieIntake.ToString();
+            dsLocal.InsertParameters[3].DefaultValue = temp.RestaurantFlag.ToString();
+            dsLocal.InsertParameters[4].DefaultValue = temp.Category.ToString();
+            dsLocal.Insert();
+
+            return true;
+        }
+        return false;
     }
 
     object IDataManager.Update(object u, string id)
