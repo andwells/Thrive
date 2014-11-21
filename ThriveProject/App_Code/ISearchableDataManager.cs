@@ -8,6 +8,6 @@ using System.Web;
 /// </summary>
 public interface ISearchableDataManager : IDataManager
 {
-    List<String> searchByType(String type);
-    List<String> searchByCategory(String category);
+    object searchByType(String type);
+    object searchByCategory(String category);
 }

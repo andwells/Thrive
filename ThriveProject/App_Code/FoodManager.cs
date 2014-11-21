@@ -25,7 +25,7 @@ public class FoodManager : ISearchableDataManager
         id = userID;
 	}
 
-    List<string> ISearchableDataManager.searchByType(string type)
+    object ISearchableDataManager.searchByType(string type)
     {
         DataView x;
         if (type.Equals("restaurant"))
@@ -35,17 +35,15 @@ public class FoodManager : ISearchableDataManager
         }
         else
         {
+            dsLocal.SelectCommand = "QueryFoodsByType";
+
             x = (DataView)dsLocal.Select(DataSourceSelectArguments.Empty);
-            
         }
-        //Bind display
-        //Bind value
-        //Bind data
         
-        return null;
+        return x;
     }
 
-    List<string> ISearchableDataManager.searchByCategory(string category)
+    object ISearchableDataManager.searchByCategory(string category)
     {
 
         return null;
@@ -79,6 +77,7 @@ public class FoodManager : ISearchableDataManager
 
     object IDataManager.Add(object a)
     {
+        //Add logic to ensure stored procedure is correct
         if(a.GetType().Name.Equals("Food"))
         {
             Food temp = (Food)a;
@@ -116,29 +115,31 @@ public class FoodManager : ISearchableDataManager
         throw new NotImplementedException();
     }
 
-    List<string> IDataManager.Search(string name)
+    object IDataManager.Search(string name)
     {
-        int totalItems = 0;
-        IDataReader apiResult = (IDataReader)dsAPI.Select(DataSourceSelectArguments.Empty);
-        IDataReader result2 = (IDataReader)dsLocal.Select(DataSourceSelectArguments.Empty);
-
+        DataView apiResult = (DataView)dsAPI.Select(DataSourceSelectArguments.Empty);
+        DataView result2 = (DataView)dsLocal.Select(DataSourceSelectArguments.Empty);
         //Test what happens if we read use DataReader or DataView
-
-        while (apiResult.Read())
+        if (result2 != null)
         {
-            
+            result2.Table.Merge(apiResult.Table, true, MissingSchemaAction.Add);
+            return result2;
         }
-
-        
-
-
-        return null; 
+        return apiResult; 
     }
 
     bool IDataManager.Close()
     {
         if (apiConnection != null) { apiConnection.Connection.Close(); apiConnection = null; }
         if (localConnection != null) { localConnection.Connection.Close(); localConnection = null; }
+        dsAPI = dsLocal = null;
         return true;
+    }
+
+
+    object IDataManager.Create(object c)
+    {
+        throw new NotImplementedException();
+        //after Insert, make call to this.Add(c);
     }
 }

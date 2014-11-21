@@ -10,8 +10,9 @@ public interface IDataManager
 {
     object Get(object g);
     object Add(object a);
+    object Create(object c);
     object Update(object u, String id);
     object Remove(object r, String id);
-    List<String> Search(String name);
+    object Search(String name);
     Boolean Close();
 }
