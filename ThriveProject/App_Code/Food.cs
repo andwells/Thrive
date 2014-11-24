@@ -60,4 +60,9 @@ public class Food
         this.restaurantFlag = restaurantFlag;
 	}
 
+
+    public override String ToString()
+    {
+        return String.Format("{0}, {1}, {2}, {3}, {4}", this.foodID, this.name, this.calorieIntake, this.restaurantFlag, this.category);   
+    }
 }

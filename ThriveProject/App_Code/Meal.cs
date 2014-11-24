@@ -10,11 +10,12 @@ public class Meal
     private String name;
     private DateTime time;
     private List<Food> foods;
+    private int foodId;
+    private Guid userId;
 
     public int TotalCalories
     {
         get { return totalCalories; }
-        set { totalCalories = value; }
     }
     
     public String Name
@@ -65,4 +66,11 @@ public class Meal
         foods = new List<Food>();
 	}
     
+    public Meal(String name, DateTime time, List<Food> foods)
+    {
+        totalCalories = 0;
+        this.name = name;
+        this.time = time;
+        this.foods = foods;
+    }
 }

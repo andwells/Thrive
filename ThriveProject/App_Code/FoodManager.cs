@@ -45,8 +45,8 @@ public class FoodManager : ISearchableDataManager
 
     object ISearchableDataManager.searchByCategory(string category)
     {
-
-        return null;
+        dsLocal.SelectCommand = "QueryFoodCategories";
+        return (DataView)dsLocal.Select(DataSourceSelectArguments.Empty);
     }
 
     object IDataManager.Get(object g)
@@ -99,9 +99,14 @@ public class FoodManager : ISearchableDataManager
         if (u != null && u.GetType().Name.Equals("Food"))
         {
             Food temp = (Food)u;
-            
+            dsLocal.UpdateParameters[0].DefaultValue = "";
+            dsLocal.UpdateParameters[0].DefaultValue = "";
+            dsLocal.UpdateParameters[0].DefaultValue = "";
+            dsLocal.UpdateParameters[0].DefaultValue = "";
+            dsLocal.UpdateParameters[0].DefaultValue = "";
+            dsLocal.Update();
 
-            return null;
+            return true;
         }
         else
         {
@@ -118,12 +123,18 @@ public class FoodManager : ISearchableDataManager
     object IDataManager.Search(string name)
     {
         DataView apiResult = (DataView)dsAPI.Select(DataSourceSelectArguments.Empty);
+        dsLocal.SelectCommand = "QueryFoods";
+        dsLocal.SelectCommandType = SqlDataSourceCommandType.StoredProcedure;
+        dsLocal.SelectParameters[0].DefaultValue = name;
         DataView result2 = (DataView)dsLocal.Select(DataSourceSelectArguments.Empty);
         //Test what happens if we read use DataReader or DataView
         if (result2 != null)
         {
-            result2.Table.Merge(apiResult.Table, true, MissingSchemaAction.Add);
-            return result2;
+            if (result2.Table.Rows.Count != 0)
+            {
+                result2.Table.Merge(apiResult.Table, true, MissingSchemaAction.Add);
+                return result2;
+            }
         }
         return apiResult; 
     }
