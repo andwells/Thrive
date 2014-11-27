@@ -35,11 +35,6 @@ public class ExerciseManager : ISearchableDataManager
         throw new NotImplementedException();
     }
 
-    object IDataManager.Create(object c)
-    {
-        throw new NotImplementedException();
-    }
-
     object IDataManager.Update(object u, string id)
     {
         throw new NotImplementedException();

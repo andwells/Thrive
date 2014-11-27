@@ -64,10 +64,4 @@ public class UserManager : IDataManager
     {
         throw new NotImplementedException();
     }
-
-
-    object IDataManager.Create(object c)
-    {
-        throw new NotImplementedException();
-    }
 }

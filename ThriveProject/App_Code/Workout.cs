@@ -11,6 +11,7 @@ public class Workout
     private String name;
     private DateTime time;
     private List<Exercise> exercises;
+    private List<double> exerciseTimes;
 
     public int TotalCalories
     {
@@ -47,7 +48,7 @@ public class Workout
         return false;
     }
 
-    public bool deleteFood(Exercise e)
+    public bool deleteExercise(Exercise e)
     {
         if (exercises.Contains(e))
         {
@@ -64,5 +65,15 @@ public class Workout
         this.name = name;
         this.time = time;
         exercises = new List<Exercise>();
+        exerciseTimes = new List<double>();
 	}
+
+    public Workout(String name, DateTime time, List<Exercise> exercises, List<double> times)
+    {
+        totalCalories = 0;
+        this.name = name;
+        this.time = time;
+        this.exercises = exercises;
+        this.exerciseTimes = times;
+    }
 }

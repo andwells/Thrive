@@ -45,7 +45,12 @@ public class FoodManager : ISearchableDataManager
 
     object ISearchableDataManager.searchByCategory(string category)
     {
+        if (string.IsNullOrEmpty(category) || string.IsNullOrWhiteSpace(category))
+        {
+            return false;
+        }
         dsLocal.SelectCommand = "QueryFoodCategories";
+        dsLocal.SelectParameters[0].DefaultValue = category;
         return (DataView)dsLocal.Select(DataSourceSelectArguments.Empty);
     }
 
@@ -86,6 +91,7 @@ public class FoodManager : ISearchableDataManager
             dsLocal.InsertParameters[2].DefaultValue = temp.CalorieIntake.ToString();
             dsLocal.InsertParameters[3].DefaultValue = temp.RestaurantFlag.ToString();
             dsLocal.InsertParameters[4].DefaultValue = temp.Category.ToString();
+            dsLocal.InsertParameters[5].DefaultValue = temp.ServingSize;
             dsLocal.Insert();
 
             return true;
@@ -108,16 +114,22 @@ public class FoodManager : ISearchableDataManager
 
             return true;
         }
-        else
-        {
-            return false;
-
-        }
+        return false;
     }
 
     object IDataManager.Remove(object r, string id)
     {
-        throw new NotImplementedException();
+        if(string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
+        {
+            return false;
+        }
+        dsLocal.DeleteParameters[0].DefaultValue = id;
+        int numAffected =  dsLocal.Delete();
+        if(numAffected > 0)
+        {
+            return true;
+        }
+        return false;
     }
 
     object IDataManager.Search(string name)
@@ -127,7 +139,6 @@ public class FoodManager : ISearchableDataManager
         dsLocal.SelectCommandType = SqlDataSourceCommandType.StoredProcedure;
         dsLocal.SelectParameters[0].DefaultValue = name;
         DataView result2 = (DataView)dsLocal.Select(DataSourceSelectArguments.Empty);
-        //Test what happens if we read use DataReader or DataView
         if (result2 != null)
         {
             if (result2.Table.Rows.Count != 0)
@@ -145,12 +156,5 @@ public class FoodManager : ISearchableDataManager
         if (localConnection != null) { localConnection.Connection.Close(); localConnection = null; }
         dsAPI = dsLocal = null;
         return true;
-    }
-
-
-    object IDataManager.Create(object c)
-    {
-        throw new NotImplementedException();
-        //after Insert, make call to this.Add(c);
     }
 }

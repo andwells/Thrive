@@ -11,6 +11,13 @@ public class Food
     private String name;
     private List<String> category;
     private int restaurantFlag;
+    private String servingSize;
+
+    public String ServingSize
+    {
+        get { return servingSize; }
+        set { servingSize = value; }
+    }
 
     public int CalorieIntake
     {

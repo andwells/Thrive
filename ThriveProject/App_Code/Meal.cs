@@ -10,6 +10,7 @@ public class Meal
     private String name;
     private DateTime time;
     private List<Food> foods;
+    private List<double> servings;
     private int foodId;
     private Guid userId;
 
@@ -66,11 +67,12 @@ public class Meal
         foods = new List<Food>();
 	}
     
-    public Meal(String name, DateTime time, List<Food> foods)
+    public Meal(String name, DateTime time, List<Food> foods, List<double> servings)
     {
         totalCalories = 0;
         this.name = name;
         this.time = time;
         this.foods = foods;
+        this.servings = servings;
     }
 }
