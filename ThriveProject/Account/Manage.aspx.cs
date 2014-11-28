@@ -20,6 +20,11 @@ public partial class Account_Manage : System.Web.UI.Page
 
     protected void Page_Load()
     {
+        if(Session["user"] == null)
+        {
+            Response.Redirect("~/Account.login.aspx");
+        }
+
         if (!IsPostBack)
         {
             // Determine the sections to render
@@ -58,9 +63,7 @@ public partial class Account_Manage : System.Web.UI.Page
             }
             else
             {
-                
                 ModelState.AddModelError("NewPassword", result.ErrorMessage);
-                
             }
         }
     }

@@ -65,20 +65,19 @@ public partial class SiteMaster : MasterPage
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["UserString"] != null)
+        
+        if (Session["User"] != null)
         {
             foodNav.Visible = true;
-            exerciseNav.Visible = true;
         }
         else
         {
             foodNav.Visible = false;
-            exerciseNav.Visible = false;
         }
 
     }
     protected void Unnamed2_LoggedOut(object sender, EventArgs e)
     {
-        Session["UserString"] = null;
+        Session["User"] = null;
     }
 }

@@ -1,5 +1,4 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Site.master.cs" Inherits="SiteMaster" %>
-
 <!DOCTYPE html>
 <html lang="en">
 <head runat="server">
@@ -69,7 +68,6 @@
                         <li><a runat="server" href="~/About">About</a></li>
                         <li><a runat="server" href="~/Contact">Contact</a></li>
                         <li><a runat="server" href="~/Track" visible="false" id="foodNav">Food</a></li>
-                        <li><a runat="server" href="~/Exercise" visible="false" id="exerciseNav">Exercise</a></li>
                     </ul>
                 </nav>
             </div>

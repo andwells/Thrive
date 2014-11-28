@@ -11,7 +11,7 @@ public partial class Track : System.Web.UI.Page
     private ISearchableDataManager manager;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if(Session["UserString"] == null)
+        if(Session["User"] == null)
         {
             Response.Redirect("~/account/login.aspx");
         }
@@ -21,11 +21,7 @@ public partial class Track : System.Web.UI.Page
         }
         else
         {
-            manager = new FoodManager(sqlDSLocal, sqlDSAccess, 
-                new Guid(
-                            (((String)Session["UserString"]).Split(';')[1])
-                        )
-                );
+            manager = new FoodManager(sqlDSLocal, sqlDSAccess, ((User)Session["User"]).UserID);
         }
     }
     protected void Menu1_MenuItemClick(object sender, MenuEventArgs e)
@@ -81,18 +77,25 @@ public partial class Track : System.Web.UI.Page
     }
     protected void gvResults_SelectedIndexChanged(object sender, EventArgs e)
     {
-        GridViewRow row = gvResults.SelectedRow;
+        DataRow row = ((DataView)Session["DataView"]).Table.Rows[gvResults.SelectedRow.DataItemIndex];
 
-        Food temp = new Food(Int32.Parse(row.Cells[1].Text), int.Parse(row.Cells[row.Cells.Count - 1].Text), row.Cells[2].Text, null, 0);
+        //Adjust for new details
+        //Food temp = new Food(Int32.Parse(row.Cells[1].Text), int.Parse(row.Cells[row.Cells.Count - 1].Text), row.Cells[2].Text, null, 0);
 
         //Response.Write(temp.ToString());
     }
-    protected void gvResults_RowCreated(object sender, GridViewRowEventArgs e)
+    protected void gvResults_RowDataBound(object sender, GridViewRowEventArgs e)
     {
-        if(gvResults.Columns.Count > 2)
+        if(e.Row.Cells.Count >3)
         {
             e.Row.Cells[1].Visible = false;
             e.Row.Cells[2].Visible = false;
+        }
+
+        if (e.Row.Cells.Count > 6)
+        {
+            e.Row.Cells[4].Visible = false;
+            e.Row.Cells[5].Visible = false;
         }
     }
 }

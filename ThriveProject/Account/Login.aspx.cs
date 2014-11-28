@@ -9,8 +9,17 @@ using Microsoft.AspNet.Membership.OpenAuth;
 
 public partial class Account_Login : Page
 {
+    private IDataManager manager;
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (Session["manager"] == null)
+        {
+            manager = new UserManager();
+        }
+        else
+        {
+            manager = (IDataManager)Session["manager"];
+        }
         RegisterHyperLink.NavigateUrl = "Register";
         OpenAuthLogin.ReturnUrl = Request.QueryString["ReturnUrl"];
 
@@ -22,6 +31,9 @@ public partial class Account_Login : Page
     }
     protected void loginDude_LoggedIn(object sender, EventArgs e)
     {
-        Session["UserString"] = loginDude.UserName + ";" + Membership.GetUser(loginDude.UserName).ProviderUserKey;
+        User x = (User)manager.Get(loginDude.UserName);
+
+        Session["User"] = x;
+        Response.Redirect("~/");
     }
 }

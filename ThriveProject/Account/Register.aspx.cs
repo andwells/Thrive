@@ -23,20 +23,20 @@ public partial class Account_Register : Page
         FormsAuthentication.SetAuthCookie(RegisterUser.UserName, createPersistentCookie: false);
         Guid newUserID = (Guid)Membership.GetUser(RegisterUser.UserName).ProviderUserKey;
 
-        Session["UserString"] = RegisterUser.UserName + ";" + newUserID.ToString();
+        IDataManager manager = new UserManager();
+        Session["User"] = manager.Get(Membership.GetUser(RegisterUser.UserName));
 
         // Insert a new record into UserProfiles
         string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
         string insertSql = "INSERT INTO ProfileData(UserId) VALUES(@UserId)";
- 
-     using (SqlConnection myConnection = new SqlConnection(connectionString))
-     {
-          myConnection.Open();
-          SqlCommand myCommand = new SqlCommand(insertSql, myConnection);
-          myCommand.Parameters.AddWithValue("@UserId", newUserID);
-          myCommand.ExecuteNonQuery();
-          myConnection.Close();
-     }
+        using (SqlConnection myConnection = new SqlConnection(connectionString))
+        {
+            myConnection.Open();
+            SqlCommand myCommand = new SqlCommand(insertSql, myConnection);
+            myCommand.Parameters.AddWithValue("@UserId", newUserID);
+            myCommand.ExecuteNonQuery();
+            myConnection.Close();
+        }
 
      //string continueUrl = RegisterUser.ContinueDestinationPageUrl;
      //if (!OpenAuth.IsLocalUrl(continueUrl))
