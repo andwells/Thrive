@@ -54,6 +54,13 @@ public class FoodManager : ISearchableDataManager
         return (DataView)dsLocal.Select(DataSourceSelectArguments.Empty);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="g"></param>
+    /// <returns></returns>
+    /// 
+    //WARNING!! This method is broken! Needs to be re-written to adjust for checking the range of the ID!
     object IDataManager.Get(object g)
     {
         if(g.GetType().Name.Equals("String"))
@@ -74,8 +81,36 @@ public class FoodManager : ISearchableDataManager
             tempDS.SelectParameters[0].DefaultValue = items[1];
             IDataReader results = (IDataReader)tempDS.Select(DataSourceSelectArguments.Empty);
 
+
+            int id = 0, calories = 0;
+            String name = "", servingSize = "";
+            bool isRestaurant = false;
+            List<String> categories = new List<String>();
+
             results.Read();
-            return new Food(results.GetInt32(0), results.GetInt32(1), results.GetString(2), new List<String>(results.GetString(3).Split(';')), results.GetInt32(4));            
+            if (items[0].Equals("local"))
+            {
+                id = results.GetInt32(0);
+                calories = results.GetInt32(3);
+                name = results.GetString(2);
+                if (!results[4].Equals(DBNull.Value))
+                {
+                    isRestaurant = results.GetBoolean(4);
+                }
+                if (!results[5].Equals(DBNull.Value))
+                {
+                    categories.AddRange(results.GetString(5).Split(','));
+                }
+                servingSize = results.GetString(6);
+
+            }
+            else
+            {
+                //Fill in other info
+            }
+
+
+            return new Food(id, calories, name, categories, isRestaurant, servingSize);
         }
         return null;
     }

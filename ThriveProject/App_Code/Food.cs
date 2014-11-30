@@ -10,7 +10,7 @@ public class Food
     private int calorieIntake;
     private String name;
     private List<String> category;
-    private int restaurantFlag;
+    private bool restaurantFlag;
     private String servingSize;
 
     public String ServingSize
@@ -36,7 +36,7 @@ public class Food
         get { return category; }
     }
     
-    public int RestaurantFlag
+    public bool RestaurantFlag
     {
         get { return restaurantFlag; }
     }
@@ -58,13 +58,14 @@ public class Food
         return this.foodID;
     }
 
-	public Food(int foodID, int calorieIntake, String name, List<String> category, int restaurantFlag)
+	public Food(int foodID, int calorieIntake, String name, List<String> category, bool restaurantFlag, string servingSize)
 	{
         this.foodID = foodID;
         this.calorieIntake = calorieIntake;
         this.name = name;
         this.category = category;
         this.restaurantFlag = restaurantFlag;
+        this.servingSize = servingSize;
 	}
 
 
