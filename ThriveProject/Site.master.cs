@@ -78,6 +78,6 @@ public partial class SiteMaster : MasterPage
     }
     protected void Unnamed2_LoggedOut(object sender, EventArgs e)
     {
-        Session["User"] = null;
+        Session.Clear();
     }
 }

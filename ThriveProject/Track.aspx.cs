@@ -77,25 +77,54 @@ public partial class Track : System.Web.UI.Page
     }
     protected void gvResults_SelectedIndexChanged(object sender, EventArgs e)
     {
+        /*The reason that there are no checks to see if the DataViewExists in Session
+        is because the DataView has to exists for the SelectedIndexChanged Event to fire*/
         DataRow row = ((DataView)Session["DataView"]).Table.Rows[gvResults.SelectedRow.DataItemIndex];
 
-        //Adjust for new details
-        //Food temp = new Food(Int32.Parse(row.Cells[1].Text), int.Parse(row.Cells[row.Cells.Count - 1].Text), row.Cells[2].Text, null, 0);
+        int id, calories;
+        String name;
+        List<String> categories = new List<String>();
+        bool isRestaurant = false;
 
-        //Response.Write(temp.ToString());
+        id = (int) row[0];
+        calories = (int) row[3];
+        
+
+        //Adjust to include parsing serving size
+        if (row.Table.Columns.Count > 5)
+        {
+            name = (string)row[2];
+            isRestaurant = (!row[4].Equals(DBNull.Value)) ? (bool)row[4] : false;
+            if (!row[5].Equals(DBNull.Value))
+            {
+                categories.AddRange(((String)row[5]).Split(','));
+            }
+        }
+        else
+        {
+            name = (string)row[1];
+        }
+        
+        
+        Food temp = new Food(id, calories, name, categories, isRestaurant, "");
+        Session["SelectedFood"] = temp;
+        
+        //This works
+        gvResults.Visible = false;
+
+        //Add logic for display how many servings and what meal
     }
     protected void gvResults_RowDataBound(object sender, GridViewRowEventArgs e)
     {
-        if(e.Row.Cells.Count >3)
+        if (e.Row.Cells.Count == 4)
         {
             e.Row.Cells[1].Visible = false;
-            e.Row.Cells[2].Visible = false;
         }
 
-        if (e.Row.Cells.Count > 6)
-        {
-            e.Row.Cells[4].Visible = false;
-            e.Row.Cells[5].Visible = false;
-        }
+        //if (e.Row.Cells.Count > 6)
+        //{
+        //    e.Row.Cells[5].Visible = false;
+        //    e.Row.Cells[6].Visible = false;
+        //}
     }
 }

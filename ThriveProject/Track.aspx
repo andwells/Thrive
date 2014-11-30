@@ -16,11 +16,29 @@
                 section.style.visibility = "hidden";
             }
         }
+        function up(x) {
+            var section = document.getElementById(x);
+            if (section.innerHTML == "") {
+                section.innerHTML = "1";
+            }
+            else {
+                section.innerHTML = (parseInt(section.innerHTML) + 1).toString();
+            }
+            
+        }
+        function down(x) {
+            var section = document.getElementById(x);
+            if(section.innerHTML != "" || section.innerHTML != "0")
+            {
+                section.innerHTML = (parseInt(section.innerHTML) - 1).toString();
+            }
+
+        }
     </script>
     <hgroup class="title">
         <h1><%: Title %></h1>
     </hgroup>
-    <asp:SqlDataSource ID="sqlDSAccess" runat="server" ConnectionString='<%$ ConnectionStrings:USDAFoods %>' ProviderName='<%$ ConnectionStrings:USDAFoods.ProviderName %>' SelectCommand="SELECT [NDB_No] AS FoodId, [Shrt_Desc] AS Name, [GmWt_Desc1], [Energ_Kcal] AS Calories FROM [ABBREV] WHERE ([Shrt_Desc] LIKE '%' + ? + '%') ORDER BY [Shrt_Desc]" DataSourceMode="DataSet">
+    <asp:SqlDataSource ID="sqlDSAccess" runat="server" ConnectionString='<%$ ConnectionStrings:USDAFoods %>' ProviderName='<%$ ConnectionStrings:USDAFoods.ProviderName %>' SelectCommand="SELECT [NDB_No] AS FoodId, [Shrt_Desc] AS Name, [GmWt_Desc1] as ServingSize, [Energ_Kcal] AS Calories FROM [ABBREV] WHERE ([Shrt_Desc] LIKE '%' + ? + '%') ORDER BY [Shrt_Desc]">
         <SelectParameters>
             <asp:ControlParameter ControlID="tbFood" PropertyName="Text" Name="Shrt_Desc" Type="String"></asp:ControlParameter>
         </SelectParameters>
@@ -73,7 +91,7 @@
                 <asp:Label ID="lblError" runat="server" Visible="false"></asp:Label><asp:LinkButton ID="lbtnCreate" runat="server" visble="true" Text="Create New Food?" OnClientClick="showhide(createFood)"></asp:LinkButton>
                 <br />
                 <section id="createFood" style="visibility:hidden">
-                    <h3>Create Food</h3>
+                    <h3>reate Food</h3>
                     <asp:Label ID="Label1" runat="server" Text="Label"></asp:Label><asp:TextBox ID="TextBox1" runat="server"></asp:TextBox><asp:Label ID="Label2" runat="server" Text="Label"></asp:Label><asp:TextBox ID="TextBox2" runat="server"></asp:TextBox><asp:Label ID="Label3" runat="server" Text="Label"></asp:Label><asp:TextBox ID="TextBox3" runat="server"></asp:TextBox><asp:Button ID="btnCreateFood" runat="server" Text="Create"/>
                 </section>
                 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -81,6 +99,16 @@
                         <asp:GridView ID="gvResults" runat="server" AutoGenerateSelectButton="true" AllowPaging="true" OnPageIndexChanging="gvResults_PageIndexChanging" OnSelectedIndexChanged="gvResults_SelectedIndexChanged" OnRowDataBound="gvResults_RowDataBound"></asp:GridView>
                     </ContentTemplate>
                 </asp:UpdatePanel>
+                <br />
+                <section id="selectedFood">
+                    <asp:Label ID="lblFoodDesc" runat="server" Text="" Visible="false"></asp:Label>
+                    <asp:Label ID="lblServings" runat="server" Text="How much did you eat?" Visible="false"></asp:Label>&nbsp;
+                    <asp:TextBox ID="tbServings" runat="server" Visible="false"></asp:TextBox> &nbsp; servings
+                    <asp:Label ID="lblMealName" runat="server" Text="Meal Name" Visible="false"></asp:Label>&nbsp;
+                    <asp:TextBox ID="tbEnterMealName" runat="server" Visible="false"></asp:TextBox>
+                </section>
+                <section id ="TodaysMeals">
+                </section>
             </asp:View>
             <asp:View ID="Tab2" runat="server">
                 <asp:TextBox ID="tbExercise" runat="server"></asp:TextBox>
