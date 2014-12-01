@@ -6,35 +6,6 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="FeaturedContent" Runat="Server">
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">
-    <script type="text/javascript">
-        function showhide(x) {
-            var section = document.getElementById(x);
-            if (section.style.visibility == "hidden") {
-                section.style.visibility = "visible";
-            }
-            else {
-                section.style.visibility = "hidden";
-            }
-        }
-        function up(x) {
-            var section = document.getElementById(x);
-            if (section.innerHTML == "") {
-                section.innerHTML = "1";
-            }
-            else {
-                section.innerHTML = (parseInt(section.innerHTML) + 1).toString();
-            }
-            
-        }
-        function down(x) {
-            var section = document.getElementById(x);
-            if(section.innerHTML != "" || section.innerHTML != "0")
-            {
-                section.innerHTML = (parseInt(section.innerHTML) - 1).toString();
-            }
-
-        }
-    </script>
     <hgroup class="title">
         <h1><%: Title %></h1>
     </hgroup>
@@ -91,7 +62,7 @@
                 <asp:Label ID="lblError" runat="server" Visible="false"></asp:Label><asp:LinkButton ID="lbtnCreate" runat="server" visble="true" Text="Create New Food?" OnClientClick="showhide(createFood)"></asp:LinkButton>
                 <br />
                 <section id="createFood" style="visibility:hidden">
-                    <h3>reate Food</h3>
+                    <h3>Create Food</h3>
                     <asp:Label ID="Label1" runat="server" Text="Label"></asp:Label><asp:TextBox ID="TextBox1" runat="server"></asp:TextBox><asp:Label ID="Label2" runat="server" Text="Label"></asp:Label><asp:TextBox ID="TextBox2" runat="server"></asp:TextBox><asp:Label ID="Label3" runat="server" Text="Label"></asp:Label><asp:TextBox ID="TextBox3" runat="server"></asp:TextBox><asp:Button ID="btnCreateFood" runat="server" Text="Create"/>
                 </section>
                 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -103,11 +74,38 @@
                 <section id="selectedFood">
                     <asp:Label ID="lblFoodDesc" runat="server" Text="" Visible="false"></asp:Label>
                     <asp:Label ID="lblServings" runat="server" Text="How much did you eat?" Visible="false"></asp:Label>&nbsp;
-                    <asp:TextBox ID="tbServings" runat="server" Visible="false"></asp:TextBox> &nbsp; servings
+                    <asp:TextBox ID="tbServings" runat="server" Visible="false"></asp:TextBox> &nbsp; 
                     <asp:Label ID="lblMealName" runat="server" Text="Meal Name" Visible="false"></asp:Label>&nbsp;
                     <asp:TextBox ID="tbEnterMealName" runat="server" Visible="false"></asp:TextBox>
+                    <asp:Button ID="btnAddFood" runat="server" Text="Add Food" Visible="false" OnClick="btnAddFood_Click"/>
                 </section>
                 <section id ="TodaysMeals">
+                    <asp:SqlDataSource ID="dsMeals" runat="server" ConnectionString='<%$ ConnectionStrings:DefaultConnection %>' DeleteCommand="DELETE FROM [Meals] WHERE [MealId] = @MealId" InsertCommand="INSERT INTO [Meals] ([UserId], [Name], [TotalCalories], [Time], [Foods], [Servings]) VALUES (@UserId, @Name, @TotalCalories, @Time, @Foods, @Servings)" SelectCommand="SELECT * FROM [Meals] WHERE ([MealId] = @MealId)" UpdateCommand="UPDATE [Meals] SET [UserId] = @UserId, [Name] = @Name, [TotalCalories] = @TotalCalories, [Time] = @Time, [Foods] = @Foods, [Servings] = @Servings WHERE [MealId] = @MealId">
+                        <DeleteParameters>
+                            <asp:Parameter Name="MealId" Type="Int32"></asp:Parameter>
+                        </DeleteParameters>
+                        <InsertParameters>
+                            <asp:Parameter Name="UserId" Type="Object"></asp:Parameter>
+                            <asp:Parameter Name="Name" Type="String"></asp:Parameter>
+                            <asp:Parameter Name="TotalCalories" Type="Double"></asp:Parameter>
+                            <asp:Parameter Name="Time" Type="DateTime"></asp:Parameter>
+                            <asp:Parameter Name="Foods" Type="String"></asp:Parameter>
+                            <asp:Parameter Name="Servings" Type="String"></asp:Parameter>
+                        </InsertParameters>
+                        <SelectParameters>
+                            <asp:Parameter Name="MealId" Type="Int32"></asp:Parameter>
+                        </SelectParameters>
+                        <UpdateParameters>
+                            <asp:Parameter Name="UserId" Type="Object"></asp:Parameter>
+                            <asp:Parameter Name="Name" Type="String"></asp:Parameter>
+                            <asp:Parameter Name="TotalCalories" Type="Double"></asp:Parameter>
+                            <asp:Parameter Name="Time" Type="DateTime"></asp:Parameter>
+                            <asp:Parameter Name="Foods" Type="String"></asp:Parameter>
+                            <asp:Parameter Name="Servings" Type="String"></asp:Parameter>
+                            <asp:Parameter Name="MealId" Type="Int32"></asp:Parameter>
+                        </UpdateParameters>
+                    </asp:SqlDataSource>
+                    <asp:GridView ID="gvTodayMeals" runat="server"></asp:GridView>
                 </section>
             </asp:View>
             <asp:View ID="Tab2" runat="server">

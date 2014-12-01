@@ -9,6 +9,7 @@ using System.Data;
 public partial class Track : System.Web.UI.Page
 {
     private ISearchableDataManager manager;
+    private IDataManager mealManager;
     protected void Page_Load(object sender, EventArgs e)
     {
         if(Session["User"] == null)
@@ -22,6 +23,15 @@ public partial class Track : System.Web.UI.Page
         else
         {
             manager = new FoodManager(sqlDSLocal, sqlDSAccess, ((User)Session["User"]).UserID);
+        }
+        if (Session["MealManager"] != null)
+        {
+            mealManager = (IDataManager)Session["MealManager"];
+        }
+        else
+        {
+            mealManager = new MealManager(dsMeals, ((User)Session["User"]).UserID);
+            Session["MealManager"] = mealManager;
         }
     }
     protected void Menu1_MenuItemClick(object sender, MenuEventArgs e)
@@ -111,8 +121,12 @@ public partial class Track : System.Web.UI.Page
         
         //This works
         gvResults.Visible = false;
-
-        //Add logic for display how many servings and what meal
+        lblFoodDesc.Visible = true;
+        lblServings.Visible = true;
+        tbServings.Visible = true;
+        lblMealName.Visible = true;
+        tbEnterMealName.Visible = true;
+        btnAddFood.Visible = true;
     }
     protected void gvResults_RowDataBound(object sender, GridViewRowEventArgs e)
     {
@@ -126,5 +140,16 @@ public partial class Track : System.Web.UI.Page
         //    e.Row.Cells[5].Visible = false;
         //    e.Row.Cells[6].Visible = false;
         //}
+    }
+    protected void btnAddFood_Click(object sender, EventArgs e)
+    {
+        double servings = Double.Parse(tbServings.Text);
+        String mealName = tbEnterMealName.Text;
+        //Replace DateTime.Today with a variable for the day being viewed
+        Meal temp = new Meal(mealName, DateTime.Today);
+        temp.addFood((Food)Session["SelectedFood"]);
+
+        
+        //Add logic to add meals to gridview
     }
 }
