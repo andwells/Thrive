@@ -16,6 +16,7 @@ public partial class Track : System.Web.UI.Page
     private DateTime currentDate;
     protected void Page_Load(object sender, EventArgs e)
     {
+        #region"Load objects from session"
         if (!IsPostBack)
         {
             currentDate = DateTime.Today;
@@ -26,7 +27,7 @@ public partial class Track : System.Web.UI.Page
             currentDate = (DateTime)Session["CurrentDate"];
         }
         lblCurrentDate.Text = currentDate.ToShortDateString();
-        #region"Load objects from session"
+        
         if(Session["User"] == null)
         {
             Response.Redirect("~/account/login.aspx");
@@ -56,8 +57,6 @@ public partial class Track : System.Web.UI.Page
             //Adjust to account for structure of object
             object t = x.Search("today");
 
-
-            
             Session["Meals"] = this.meals;
         }
         else
@@ -130,7 +129,6 @@ public partial class Track : System.Web.UI.Page
 
         id = (int) row[0];
         calories = (int) row[3];
-        
 
         //Adjust to include parsing serving size
         if (row.Table.Columns.Count > 5)
@@ -146,7 +144,6 @@ public partial class Track : System.Web.UI.Page
         {
             name = (string)row[1];
         }
-        
         
         Food temp = new Food(id, calories, name, categories, isRestaurant, "");
         Session["SelectedFood"] = temp;
@@ -179,8 +176,8 @@ public partial class Track : System.Web.UI.Page
         double servings = Double.Parse(tbServings.Text);
         String mealName = tbEnterMealName.Text;
         //Replace DateTime.Today with a variable for the day being viewed
-        Meal temp = new Meal(mealName, DateTime.Today);
-        temp.addFood((Food)Session["SelectedFood"]);
+        Meal temp = new Meal(mealName, currentDate);
+        temp.addFood((Food)Session["SelectedFood"], servings);
         
         //add check to make sure meal for certain day with that name doesn't already exist
         if (meals.ContainsKey(temp.Name))

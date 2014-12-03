@@ -14,7 +14,6 @@ public class MealManager : IDataManager
 {
     private IDbCommand apiConnection;
     private IDbCommand localConnection;
-    private SqlDataSource dsAPI;
     private SqlDataSource dsLocal;
     private Guid id;
 
@@ -23,7 +22,6 @@ public class MealManager : IDataManager
         dsLocal = local;
         id = userID;
 	}
-
 
     object IDataManager.Get(object g)
     {
@@ -47,19 +45,77 @@ public class MealManager : IDataManager
         dsLocal.SelectCommand = "GetMeal";
         dsLocal.SelectCommandType = SqlDataSourceCommandType.StoredProcedure;
         dsLocal.SelectParameters[0].DefaultValue = id;
-        dsLocal.Select(DataSourceSelectArguments.Empty);
+        
+        IDataReader results = (IDataReader)dsLocal.Select(DataSourceSelectArguments.Empty);
+        
+        results.Read();
+        //Incomplete; may not need to be used
 
         return null;
     }
 
     object IDataManager.Add(object a)
     {
-        throw new NotImplementedException();
+        if (a.GetType().Name.Equals("Meal"))
+        {
+            Meal temp = (Meal)a;
+            String foods = "";
+            String servings = "";
+
+            foreach(Food x in temp.Foods)
+            {
+                foods+= x.getFoodID() + ",";
+            }
+
+            foreach (double d in temp.Servings)
+            {
+                servings += d + ",";
+            }
+
+            dsLocal.InsertCommand = "CreateMeal";
+            dsLocal.InsertCommandType = SqlDataSourceCommandType.StoredProcedure;
+            dsLocal.InsertParameters[0].DefaultValue = id.ToString();
+            dsLocal.InsertParameters[1].DefaultValue = temp.Name;
+            dsLocal.InsertParameters[2].DefaultValue = temp.Time.ToShortDateString();
+            dsLocal.InsertParameters[3].DefaultValue = "" + temp.TotalCalories;
+            dsLocal.InsertParameters[4].DefaultValue = "" + servings;
+            dsLocal.Insert();
+            return true;
+        }
+        return false;
     }
 
     object IDataManager.Update(object u, string id)
     {
-        throw new NotImplementedException();
+        if(u.GetType().Name.Equals("Meal"))
+        {
+            Meal temp = (Meal)u;
+            String foods = "";
+            String servings = "";
+            dsLocal.UpdateCommand = "UpdateMeal";
+            dsLocal.UpdateCommandType = SqlDataSourceCommandType.StoredProcedure;
+
+            foreach (Food f in temp.Foods)
+            {
+                foods += f.getFoodID() + ",";
+            }
+
+            foreach (Double d in servings)
+            {
+                servings += d + ",";
+            }
+            
+            dsLocal.UpdateParameters[0].DefaultValue = "id"; //Not working
+            dsLocal.UpdateParameters[1].DefaultValue = "" + id;
+            dsLocal.UpdateParameters[2].DefaultValue = temp.Name;
+            dsLocal.UpdateParameters[3].DefaultValue = temp.Time.ToShortDateString();
+            dsLocal.UpdateParameters[4].DefaultValue = "" + temp.TotalCalories;
+            dsLocal.UpdateParameters[5].DefaultValue = foods;
+            dsLocal.UpdateParameters[6].DefaultValue = servings;
+            dsLocal.Update();
+            return true;
+        }
+        return false;
     }
 
     object IDataManager.Remove(object r, string id)
@@ -69,12 +125,15 @@ public class MealManager : IDataManager
 
     object IDataManager.Search(string name)
     {
-        return null;
-
+        dsLocal.SelectCommand = "QueryMeals";
+        dsLocal.SelectCommandType = SqlDataSourceCommandType.StoredProcedure;
+        dsLocal.SelectParameters[0].DefaultValue = name;
+        dsLocal.SelectParameters.Add("userID", "" + id);
+        return (DataView)dsLocal.Select(DataSourceSelectArguments.Empty);
     }
 
     bool IDataManager.Close()
     {
-        throw new NotImplementedException();
+        return true;
     }
 }

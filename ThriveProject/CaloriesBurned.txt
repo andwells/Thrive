@@ -1,0 +1,5 @@
+Calories burned Formula
+
+(metric * 3.5 * (weight/2.2046) / 200) * minutes burned = total calories burned
+
+Note the reason weight is divided by 2.2046 is because the original formula uses kg, and 2.2046 is the conversion factor.

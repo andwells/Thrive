@@ -37,12 +37,13 @@ public class Meal
         set { foods = value; }
     }
 
-    public bool addFood(Food f)
+    public bool addFood(Food f, double serving)
     {
         if(!foods.Contains(f))
         {
             foods.Add(f);
             totalCalories += f.CalorieIntake;
+            servings.Add(serving);
             return true;
         }
         return false;
@@ -52,11 +53,18 @@ public class Meal
     {
         if (foods.Contains(f))
         {
+            int i = foods.IndexOf(f);
             foods.Remove(f);
             totalCalories -= f.CalorieIntake;
+            servings.Remove(i);
             return true;
         }
         return false;
+    }
+
+    public List<double> Servings
+    {
+        get { return servings; }
     }
 
 	public Meal(String name, DateTime time)
