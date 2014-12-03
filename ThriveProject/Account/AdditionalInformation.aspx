@@ -12,12 +12,11 @@
     <section>
         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
             <ContentTemplate>
-                
-                <asp:Wizard ID="wzrdAdditional" runat="server" Width="359px" ActiveStepIndex="0" OnFinishButtonClick="wzrdAdditional_FinishButtonClick" OnNextButtonClick="wzrdAdditional_NextButtonClick">
+                <asp:Wizard ID="wzrdAdditional" runat="server" Width="530px" ActiveStepIndex="0" OnFinishButtonClick="wzrdAdditional_FinishButtonClick" OnNextButtonClick="wzrdAdditional_NextButtonClick">
                     <WizardSteps>
                         <asp:WizardStep runat="server" Title="Step 1">
                              Height<br />
-                                <asp:ListBox ID="lbFeet" runat="server" Height="22px">
+                                <asp:ListBox ID="lbFeet" runat="server" Height="22px" Rows="1">
                                     <asp:ListItem>1</asp:ListItem>
                                     <asp:ListItem>2</asp:ListItem>
                                     <asp:ListItem>3</asp:ListItem>
@@ -30,7 +29,7 @@
                                     <asp:ListItem>10</asp:ListItem>
                                 </asp:ListBox>
                                 &nbsp;ft.&nbsp;
-                                <asp:ListBox ID="lbInches" runat="server" Height="22px">
+                                <asp:ListBox ID="lbInches" runat="server" Height="22px" Rows="1">
                                     <asp:ListItem>1</asp:ListItem>
                                     <asp:ListItem>2</asp:ListItem>
                                     <asp:ListItem>3</asp:ListItem>

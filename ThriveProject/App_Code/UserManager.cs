@@ -19,7 +19,7 @@ public class UserManager : IDataManager
     object IDataManager.Get(object g)
     {
         String name = g.GetType().Name;
-        if(!name.Equals("Guid") && !name.Equals("String"))
+        if(!name.Equals("String"))
         {
             return null;
         }
@@ -28,14 +28,28 @@ public class UserManager : IDataManager
         {
             cmd.CommandText = "GetUser";
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@UserId", g.ToString());
+            cmd.Parameters.AddWithValue("@Username", (String)g);
+            cmd.Connection.Open();
             using (SqlDataReader r = cmd.ExecuteReader())
             {
-                temp = new User(r.GetGuid(0), r.GetString(1), r.GetInt32(2), r.GetString(3), r.GetInt32(4),
-                    (bool)r[5], r.GetInt32(6), (bool)r[7], r.GetInt32(8), (bool)r[9], r.GetInt32(10), r.GetDouble(11), r.GetInt32(12));
+                r.Read();
+                Guid gu = r.GetGuid(0);
+                String uName = r.GetString(1);
+                int age = r.GetInt32(2);
+                String gender = r.GetString(3);
+                int height = r.GetInt32(4);
+                bool hyFlag = (bool)r[5];
+                int hyGoal = r[6] == DBNull.Value ?  -1 : r.GetInt32(6);
+                bool slFlag = (bool)r[7];
+                int slGoal = r[8] == DBNull.Value ? -1 : r.GetInt32(8);
+                bool strFlag = (bool)r[9];
+                int strGoal = r[10] == DBNull.Value ? -1 : r.GetInt32(10);
+                double w = r.GetInt32(11);
+                int weightGoal =r[12] == DBNull.Value ? -1 : r.GetInt32(12);
+
+                temp = new User(gu, uName, age, gender, height, hyFlag, hyGoal, slFlag, slGoal, strFlag,
+                    strGoal, w, weightGoal);
             }
-
-
         }
         return temp;
     }

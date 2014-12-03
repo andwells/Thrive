@@ -1,10 +1,8 @@
 ﻿<%@ Page Title="Register" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeFile="Register.aspx.cs" Inherits="Account_Register" %>
-
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
     <hgroup class="title">
         <h1><%: Title %>.</h1>
     </hgroup>
-
     <asp:CreateUserWizard runat="server" ID="RegisterUser" ViewStateMode="Disabled" OnCreatedUser="RegisterUser_CreatedUser" ContinueDestinationPageUrl="~/Account/AdditionalInformation.aspx">
         <LayoutTemplate>
             <asp:PlaceHolder runat="server" ID="wizardStepPlaceholder" />

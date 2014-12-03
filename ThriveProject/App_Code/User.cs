@@ -17,9 +17,9 @@ public class User
     private bool stressFlag;
     private int stressGoal;
     private int weightManagementgoal;
-    private String password;
+    //private String password;
     private String username;
-    private int userID;
+    private Guid userID;
     private List<Group> groups;
 
     public int Height
@@ -93,12 +93,12 @@ public class User
         get { return username; }
     }
     
-    public String Password
-    {
-        get { return password; }
-    }
+    //public String Password
+    //{
+    //    get { return password; }
+    //}
 
-    public int UserID
+    public Guid UserID
     {
         get { return userID; }
     }
@@ -107,10 +107,10 @@ public class User
     {
         get { return groups; }
     }
-    
 
-	public User(int height, double weight, int age, String gender, bool sleepFlag, int sleepGoal, bool hydrationFlag, int hydrationGoal, bool stressFlag, int stressGoal,
-    int weightManagementgoal, String password, String username, int userID, List<Group> groups)
+
+    public User(Guid UserId, String username, int age, String gender, int height, bool hydrationFlag, int hydrationGoal, bool sleepFlag, int sleepGoal, bool stressFlag, int stressGoal,
+    double weight, int weightManagementgoal)//, List<Group> groups), String password)
 	{
         this.height = height;
         this.weight = weight;
@@ -123,10 +123,9 @@ public class User
         this.stressFlag = stressFlag;
         this.stressGoal = stressGoal;
         this.weightManagementgoal = weightManagementgoal;
-        this.password = password;
+        //this.password = password;
         this.username = username;
         this.userID = UserID;
-        this.groups = groups;
+        //this.groups = groups;
 	}
-
 }

@@ -20,7 +20,6 @@ public class MealManager : IDataManager
 
 	public MealManager(SqlDataSource local, Guid userID)
 	{
-        dsAPI = API;
         dsLocal = local;
         id = userID;
 	}
@@ -41,7 +40,7 @@ public class MealManager : IDataManager
         }
         else
         {
-            id = g;
+            id = (String)g;
         }
 
         //Change to appropriate Stored Procedure
@@ -70,7 +69,8 @@ public class MealManager : IDataManager
 
     object IDataManager.Search(string name)
     {
-        throw new NotImplementedException();
+        return null;
+
     }
 
     bool IDataManager.Close()

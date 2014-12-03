@@ -10,8 +10,23 @@ public partial class Track : System.Web.UI.Page
 {
     private ISearchableDataManager manager;
     private IDataManager mealManager;
+    private Boolean mealsCreated;
+    private Dictionary<String, Meal> meals;
+    private DataTable table;
+    private DateTime currentDate;
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (!IsPostBack)
+        {
+            currentDate = DateTime.Today;
+            Session["CurrentDate"] = currentDate;
+        }
+        else
+        {
+            currentDate = (DateTime)Session["CurrentDate"];
+        }
+        lblCurrentDate.Text = currentDate.ToShortDateString();
+        #region"Load objects from session"
         if(Session["User"] == null)
         {
             Response.Redirect("~/account/login.aspx");
@@ -24,6 +39,7 @@ public partial class Track : System.Web.UI.Page
         {
             manager = new FoodManager(sqlDSLocal, sqlDSAccess, ((User)Session["User"]).UserID);
         }
+
         if (Session["MealManager"] != null)
         {
             mealManager = (IDataManager)Session["MealManager"];
@@ -33,6 +49,22 @@ public partial class Track : System.Web.UI.Page
             mealManager = new MealManager(dsMeals, ((User)Session["User"]).UserID);
             Session["MealManager"] = mealManager;
         }
+        if (Session["Meals"] == null)
+        {
+            this.meals = new Dictionary<string, Meal>();
+            IDataManager x = new MealManager(dsMeals, ((User)Session["User"]).UserID);
+            //Adjust to account for structure of object
+            object t = x.Search("today");
+
+
+            
+            Session["Meals"] = this.meals;
+        }
+        else
+        {
+            meals = (Dictionary<string, Meal>)Session["Meals"];
+        }
+        #endregion
     }
     protected void Menu1_MenuItemClick(object sender, MenuEventArgs e)
     {
@@ -118,7 +150,8 @@ public partial class Track : System.Web.UI.Page
         
         Food temp = new Food(id, calories, name, categories, isRestaurant, "");
         Session["SelectedFood"] = temp;
-        
+
+        lblFoodDesc.Text = temp.Name;
         //This works
         gvResults.Visible = false;
         lblFoodDesc.Visible = true;
@@ -148,8 +181,20 @@ public partial class Track : System.Web.UI.Page
         //Replace DateTime.Today with a variable for the day being viewed
         Meal temp = new Meal(mealName, DateTime.Today);
         temp.addFood((Food)Session["SelectedFood"]);
-
         
+        //add check to make sure meal for certain day with that name doesn't already exist
+        if (meals.ContainsKey(temp.Name))
+        {
+            mealManager.Update(temp, "id");
+            meals[temp.Name] = temp;
+        }
+        else
+        {
+            mealManager.Add(temp);
+            meals.Add(temp.Name, temp);
+        }
+        Session["CurrentMeal"] = temp;
+
         //Add logic to add meals to gridview
     }
 }
