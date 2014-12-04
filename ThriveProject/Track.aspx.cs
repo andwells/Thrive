@@ -130,7 +130,6 @@ public partial class Track : System.Web.UI.Page
         id = (int) row[0];
         calories = (int) row[3];
 
-        //Adjust to include parsing serving size
         if (row.Table.Columns.Count > 5)
         {
             name = (string)row[2];
@@ -175,24 +174,56 @@ public partial class Track : System.Web.UI.Page
     {
         double servings = Double.Parse(tbServings.Text);
         String mealName = tbEnterMealName.Text;
-        //Replace DateTime.Today with a variable for the day being viewed
-        Meal temp = new Meal(mealName, currentDate);
-        temp.addFood((Food)Session["SelectedFood"], servings);
+        Meal temp;
+        
         
         //add check to make sure meal for certain day with that name doesn't already exist
-        if (meals.ContainsKey(temp.Name))
+        if (meals.ContainsKey(mealName))
         {
+            temp = meals[mealName];
+            temp.addFood((Food)Session["SelectedFood"], servings);
             mealManager.Update(temp, "id");
             meals[temp.Name] = temp;
         }
         else
         {
+            temp = new Meal(mealName, currentDate);
+            temp.addFood((Food)Session["SelectedFood"], servings);
             mealManager.Add(temp);
             meals.Add(temp.Name, temp);
         }
         Session["CurrentMeal"] = temp;
 
         //Add logic to add meals to gridview
+        DataTable table = buildMealsTable();
+        Session["MealsTable"] = table;
+        gvTodayMeals.DataSource = table;
+        gvTodayMeals.DataBind();
+    }
+
+    private DataTable buildMealsTable()
+    {
+        DataTable table = new DataTable();
+        table.Columns.Add("Food Name");
+        table.Columns.Add("Servings");
+        table.Columns.Add("Total Calories");
+        table.Columns.Add("MealName");
+        
+        foreach(Meal m in meals.Values)
+        {
+            object[] rowVals;
+            for (int i = 0; i < m.Foods.Count; i++)
+            {
+                rowVals = new object[4];
+                rowVals[0] = m.Foods[i].Name;
+                rowVals[1] = m.Servings[i];
+                rowVals[2] = m.Foods[i].CalorieIntake * m.Servings[i];
+                rowVals[3] = m.Name;
+                table.Rows.Add(rowVals);
+            }       
+        }
+        table.AcceptChanges();
+        return table;
     }
     
     protected void btnLessFoodDate_Click(object sender, EventArgs e)
