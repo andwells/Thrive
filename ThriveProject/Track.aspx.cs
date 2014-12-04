@@ -194,4 +194,19 @@ public partial class Track : System.Web.UI.Page
 
         //Add logic to add meals to gridview
     }
+    
+    protected void btnLessFoodDate_Click(object sender, EventArgs e)
+    {
+        currentDate.AddDays(-1);
+        
+        //logic for binding based on new date
+    }
+    
+    protected void btnMoreFoodDate_Click(object sender, EventArgs e)
+    {
+        currentDate.AddDays(1);
+        
+        //logic for binding based on new date
+    }
+    
 }
