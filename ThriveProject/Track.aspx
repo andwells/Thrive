@@ -76,7 +76,9 @@
         <br />
         <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex="0">
             <asp:View ID="Tab1" runat="server">
-                
+                <asp:Button id="btnLessFoodDate" runtat="server" Text="<" OnClick="btnLessFoodDate_Click"/>
+                <asp:Label id="lblFoodDate" runat="server" Text=""></asp:Label>
+                <asp:Button id="btnMoreFoodDate" runtat="server" Text=">" OnClick="btnMoreFoodDate_Click"/>
                 <br />
                 <asp:Label ID="lblCurrentDate" runat="server" Text=""></asp:Label>
                 <br />
