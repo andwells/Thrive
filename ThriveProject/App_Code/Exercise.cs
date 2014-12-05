@@ -10,7 +10,7 @@ public class Exercise
     private int caloriesBurned;
     private String name;
     private List<String> category;
-    private int type;
+    private String type;
 
     public int ExerciseID
     {
@@ -42,7 +42,7 @@ public class Exercise
         set { type = value; }
     }
 
-	public Exercise(int exerciseID, int caloriesBurned, String name, List<String> category, int type)
+	public Exercise(int exerciseID, int caloriesBurned, String name, List<String> category, String type)
 	{
         this.exerciseID = exerciseID;
         this.caloriesBurned = caloriesBurned;
