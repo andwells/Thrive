@@ -68,6 +68,20 @@
                                     <asp:ListItem Value="heavy">Heavy (e.g. construction worker)</asp:ListItem>
                             </asp:RadioButtonList>
                         </asp:WizardStep>
+                        <asp:WizardStep runat="server" title="Step 3">
+                            <asp:RaidioButtonList ID="rblHydrationTracking" runat="server">
+                                <asp:ListItem Value="yes">I want to track hydration</asp:ListItem>
+                                <asp:ListItem Value="no">I do not want to track hydration</asp:ListItem>
+                            </asp:RadioButtonList>
+                            <<asp:TextBox ID="tbHydration" runat="server" Width="92px"></asp:TextBox>
+                        </asp:WizardStep>
+                        <asp:WizardStep runat="server" title="Step 4">
+                            <asp:RaidioButtonList ID="rblSleepTracking" runat="server">
+                                <asp:ListItem Value="yes">I want to track sleep</asp:ListItem>
+                                <asp:ListItem Value="no">I do not want to track sleep</asp:ListItem>
+                            </asp:RadioButtonList>
+                            <asp:TextBox ID="tbSleep" runat="server" Width="92px"></asp:TextBox>
+                        </asp:WizardStep>
                     </WizardSteps>
                 </asp:Wizard>
                 
