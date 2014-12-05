@@ -47,8 +47,8 @@ public partial class Account_AdditionalInformation : System.Web.UI.Page
             myCommand.Parameters.AddWithValue("@SleepGoal", "");
             myCommand.Parameters.AddWithValue("@HydrationFlag", 0);
             myCommand.Parameters.AddWithValue("@HydrationGoal", "");
-            myCommand.Parameters.AddWithValue("@StressFlag", 0);
-            myCommand.Parameters.AddWithValue("@StressGoal", "");
+            //myCommand.Parameters.AddWithValue("@StressFlag", 0);
+            //myCommand.Parameters.AddWithValue("@StressGoal", "");
             myCommand.Parameters.AddWithValue("@WeightManagementGoal", 0);
             myCommand.ExecuteNonQuery();
             myConnection.Close();
