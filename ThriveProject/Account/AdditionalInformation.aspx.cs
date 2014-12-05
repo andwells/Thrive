@@ -29,7 +29,7 @@ public partial class Account_AdditionalInformation : System.Web.UI.Page
         int weightGoal = Int32.Parse(rblWeightGoal.SelectedValue);
         int sleepFlag = Int32.Parse(rblSleepTracking.SelectedValue);
         String sleepGoal = tbSleep.Text;
-        int hydrationFlag = Int32.Parse(rblHydrationtracking.SelectedValue);
+        int hydrationFlag = Int32.Parse(rblHydrationTracking.SelectedValue);
         String hydrationGoal = tbHydration.Text;
         
         // Insert a new record into UserProfiles

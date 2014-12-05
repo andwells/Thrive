@@ -69,22 +69,22 @@
                             </asp:RadioButtonList>
                         </asp:WizardStep>
                         <asp:WizardStep runat="server" title="Step 3">
-                            <asp:RaidioButtonList ID="rblWeightGoal" runat="server">
+                            <asp:radioButtonList ID="rblWeightGoal" runat="server">
                                 <asp:ListItem Value="0">I want to lose weight</asp:ListItem>
                                 <asp:ListItem Value="1">I want to gain weight</asp:ListItem>
                                 <asp:ListItem Value="2">I want to maintain my weight</asp:ListItem>
                             </asp:RadioButtonList>
-                            <asp:TextBox ID="tbSleep" runat="server" Width="92px"></asp:TextBox>
+                            <asp:TextBox ID="tbWeightGoal" runat="server" Width="92px"></asp:TextBox>
                         </asp:WizardStep>
                         <asp:WizardStep runat="server" title="Step 4">
-                            <asp:RaidioButtonList ID="rblHydrationTracking" runat="server">
+                            <asp:radioButtonList ID="rblHydrationTracking" runat="server">
                                 <asp:ListItem Value="1">I want to track hydration</asp:ListItem>
                                 <asp:ListItem Value="0">I do not want to track hydration</asp:ListItem>
                             </asp:RadioButtonList>
                             <<asp:TextBox ID="tbHydration" runat="server" Width="92px"></asp:TextBox>
                         </asp:WizardStep>
                         <asp:WizardStep runat="server" title="Step 5">
-                            <asp:RaidioButtonList ID="rblSleepTracking" runat="server">
+                            <asp:radioButtonList ID="rblSleepTracking" runat="server">
                                 <asp:ListItem Value="1">I want to track sleep</asp:ListItem>
                                 <asp:ListItem Value="0">I do not want to track sleep</asp:ListItem>
                             </asp:RadioButtonList>

@@ -37,21 +37,22 @@
             <asp:Parameter Name="Categories" Type="String"></asp:Parameter>
         </UpdateParameters>
     </asp:SqlDataSource>
-    <asp:SqlDataSource ID="dsMeals" runat="server" ConnectionString='<%$ ConnectionStrings:DefaultConnection %>' DeleteCommand="DELETE FROM [Meals] WHERE [MealId] = @MealId" InsertCommand="INSERT INTO [Meals] ([UserId], [Name], [TotalCalories], [Time], [Foods], [Servings]) VALUES (@UserId, @Name, @TotalCalories, @Time, @Foods, @Servings)" SelectCommand="SELECT * FROM [Meals] WHERE ([MealId] = @MealId)" UpdateCommand="UPDATE [Meals] SET [UserId] = @UserId, [Name] = @Name, [TotalCalories] = @TotalCalories, [Time] = @Time, [Foods] = @Foods, [Servings] = @Servings WHERE [MealId] = @MealId">
-                        <DeleteParameters>
-                            <asp:Parameter Name="MealId" Type="Int32"></asp:Parameter>
-                        </DeleteParameters>
-                        <InsertParameters>
-                            <asp:Parameter Name="UserId" Type="Object"></asp:Parameter>
-                            <asp:Parameter Name="Name" Type="String"></asp:Parameter>
-                            <asp:Parameter Name="TotalCalories" Type="Double"></asp:Parameter>
-                            <asp:Parameter Name="Time" Type="DateTime"></asp:Parameter>
-                            <asp:Parameter Name="Foods" Type="String"></asp:Parameter>
-                            <asp:Parameter Name="Servings" Type="String"></asp:Parameter>
-                        </InsertParameters>
-                        <SelectParameters>
-                            <asp:Parameter Name="MealId" Type="Int32"></asp:Parameter>
-                        </SelectParameters>
+    <asp:SqlDataSource ID="dsMeals" runat="server" ConnectionString='<%$ ConnectionStrings:DefaultConnection %>' DeleteCommand="DELETE FROM [Meals] WHERE [MealId] = @MealId" InsertCommand="INSERT INTO [Meals] ([UserId], [Name], [TotalCalories], [Time], [Foods], [Servings]) VALUES (@UserId, @Name, @TotalCalories, @Time, @Foods, @Servings)" SelectCommand="QueryMeals" UpdateCommand="UPDATE [Meals] SET [UserId] = @UserId, [Name] = @Name, [TotalCalories] = @TotalCalories, [Time] = @Time, [Foods] = @Foods, [Servings] = @Servings WHERE [MealId] = @MealId" SelectCommandType="StoredProcedure">
+        <DeleteParameters>
+            <asp:Parameter Name="MealId" Type="Int32"></asp:Parameter>
+        </DeleteParameters>
+        <InsertParameters>
+            <asp:Parameter Name="UserId" Type="Object"></asp:Parameter>
+            <asp:Parameter Name="Name" Type="String"></asp:Parameter>
+            <asp:Parameter Name="TotalCalories" Type="Double"></asp:Parameter>
+            <asp:Parameter Name="Time" Type="DateTime"></asp:Parameter>
+            <asp:Parameter Name="Foods" Type="String"></asp:Parameter>
+            <asp:Parameter Name="Servings" Type="String"></asp:Parameter>
+        </InsertParameters>
+        <SelectParameters>
+            <asp:Parameter Name="time" DbType="Date"></asp:Parameter>
+            <asp:Parameter Name="userId" Type="Object"></asp:Parameter>
+        </SelectParameters>
                         <UpdateParameters>
                             <asp:Parameter Name="UserId" Type="Object"></asp:Parameter>
                             <asp:Parameter Name="Name" Type="String"></asp:Parameter>

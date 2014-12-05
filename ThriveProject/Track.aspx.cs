@@ -55,7 +55,7 @@ public partial class Track : System.Web.UI.Page
             this.meals = new Dictionary<string, Meal>();
             IDataManager x = new MealManager(dsMeals, ((User)Session["User"]).UserID);
             //Adjust to account for structure of object
-            object t = x.Search("today");
+            object t = x.Search(currentDate.ToString("yyyy-MM-dd"));
 
             Session["Meals"] = this.meals;
         }
