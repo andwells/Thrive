@@ -86,30 +86,20 @@ public class FoodManager : ISearchableDataManager
             String name = "", servingSize = "";
             bool isRestaurant = false;
             List<String> categories = new List<String>();
-
-            //results.Read();
-            //if (items[0].Equals("local"))
-            //{
-                id = Int32.ParseInt(results.Row[0].Cells[0]);
-                calories = Int32.ParseInt(results.Row[0].Cells[3]);
-                name = results.Row[0].Cells[2];
-                if (!results.Row[0].Cells[4].Equals(DBNull.Value))
-                {
-                  isRestaurant = Boolean.ParseBoolean(results.Row[0].Cells[4]);
-                }
-                if (!results.Row[0].Cells[5].Equals(DBNull.Value))
-                {
-                    categories.AddRange(results.Row[0].Cells[5].Split(','));
-                }
-                servingSize = results.Row[0].Cells[6];
-
-            //}
-            //else
-            //{
-                //Fill in other info
-            //}
-
-
+                       
+            id = Int32.Parse((String)results.Table.Rows[0][0]);
+            calories = Int32.Parse((String)results.Table.Rows[0][3]);
+            name = (String)results.Table.Rows[0][2];
+            if (!results.Table.Rows[0][4].Equals(DBNull.Value))
+            {
+                isRestaurant = Boolean.Parse((String)results.Table.Rows[0][4]);
+            }
+            if (!results.Table.Rows[0][5].Equals(DBNull.Value))
+            {
+                categories.AddRange(((String)results.Table.Rows[0][5]).Split(','));
+            }
+            servingSize = (String)results.Table.Rows[0][6];
+            
             return new Food(id, calories, name, categories, isRestaurant, servingSize);
         }
         return null;

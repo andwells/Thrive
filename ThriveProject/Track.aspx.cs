@@ -26,7 +26,7 @@ public partial class Track : System.Web.UI.Page
         {
             currentDate = (DateTime)Session["CurrentDate"];
         }
-        lblCurrentDate.Text = currentDate.ToShortDateString();
+        lblFoodDate.Text = currentDate.ToShortDateString();
         
         if(Session["User"] == null)
         {
@@ -83,7 +83,7 @@ public partial class Track : System.Web.UI.Page
                 {
                     gvResults.Visible = false;
                     lblError.Visible = true;
-                    lblError.Text = "The food you are looking for does not exist. Do you want to create it?";
+                    lblError.Text = "The food you are looking for does not exist.";
                     lbtnCreate.Visible = true;
                 }
                 else
@@ -289,5 +289,11 @@ public partial class Track : System.Web.UI.Page
                 return;
         }
     }
-    
+
+    protected void lbtnCreate_Click(object sender, EventArgs e)
+    {
+        pnlCreateFood.Visible = true;
+        lbtnCreate.Visible = false;
+        lblError.Visible = true;
+    }
 }

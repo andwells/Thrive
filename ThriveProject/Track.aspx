@@ -76,11 +76,10 @@
         <br />
         <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex="0">
             <asp:View ID="Tab1" runat="server">
-                <asp:Button id="btnLessFoodDate" runtat="server" Text="<" OnClick="btnLessFoodDate_Click"/>
+                <asp:Button id="btnLessFoodDate" runat="server" Text="<" OnClick="btnLessFoodDate_Click"/>
                 <asp:Label id="lblFoodDate" runat="server" Text=""></asp:Label>
-                <asp:Button id="btnMoreFoodDate" runtat="server" Text=">" OnClick="btnMoreFoodDate_Click"/>
+                <asp:Button id="btnMoreFoodDate" runat="server" Text=">" OnClick="btnMoreFoodDate_Click"/>
                 <br />
-                <asp:Label ID="lblCurrentDate" runat="server" Text=""></asp:Label>
                 <br />
                 <asp:DropDownList ID="ddlSearchType" runat="server">
                     <asp:ListItem Value="name">By Name</asp:ListItem>
@@ -90,11 +89,23 @@
                 <asp:TextBox ID="tbFood" runat="server"></asp:TextBox>
                 <asp:Button ID="btnSearchFood" runat="server" Text="Search" OnClick="btnSearchFood_Click" />
                 <br />
-                <asp:Label ID="lblError" runat="server" Visible="false"></asp:Label><asp:LinkButton ID="lbtnCreate" runat="server" visble="true" Text="Create New Food?"></asp:LinkButton>
+                <asp:Label ID="lblError" runat="server" Visible="false"></asp:Label><asp:LinkButton ID="lbtnCreate" runat="server" visble="true" Text="Create New Food?" OnClick="lbtnCreate_Click"></asp:LinkButton>
                 <br />
-                <section id="createFood" style="visibility:hidden">
-                    <h3>Create Food</h3>
-                    <asp:Label ID="Label1" runat="server" Text="Label"></asp:Label><asp:TextBox ID="TextBox1" runat="server"></asp:TextBox><asp:Label ID="Label2" runat="server" Text="Label"></asp:Label><asp:TextBox ID="TextBox2" runat="server"></asp:TextBox><asp:Label ID="Label3" runat="server" Text="Label"></asp:Label><asp:TextBox ID="TextBox3" runat="server"></asp:TextBox><asp:Button ID="btnCreateFood" runat="server" Text="Create"/>
+                <section id="createFood">
+                    <asp:Panel ID="pnlCreateFood" runat="server" Visible="false">
+                        <h3>Create Food</h3>
+                        <asp:Label ID="lblFoodName" runat="server" Text="Label"></asp:Label>
+                        <asp:TextBox ID="tbFoodName" runat="server"></asp:TextBox>
+                        <asp:Label ID="lblCalories" runat="server" Text="Label"></asp:Label>
+                        <asp:TextBox ID="tbCalories" runat="server"></asp:TextBox>
+                        <asp:Label ID="lblCategories" runat="server" Text="Label"></asp:Label>
+                        <asp:TextBox ID="tbCategories" runat="server"></asp:TextBox>
+                        <asp:Label ID="Label1" runat="server" Text="Label"></asp:Label>
+                        <asp:CheckBox ID="cbIsRestaurant" runat="server" />
+                        <asp:Label ID="lblServingSize" runat="server" Text="Label"></asp:Label>
+                        <asp:TextBox ID="tbServingSize" runat="server"></asp:TextBox>
+                        <asp:Button ID="btnCreateFood" runat="server" Text="Create"/>
+                    </asp:Panel>
                 </section>
                 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                     <ContentTemplate>
@@ -111,18 +122,16 @@
                         </ContentTemplate>
                 </asp:UpdatePanel>
                 <section id ="TodaysMeals">
-                    
                     <asp:GridView ID="gvTodayMeals" runat="server"></asp:GridView>
                 </section>
             </asp:View>
             <asp:View ID="Tab2" runat="server">
-            <asp:Button id="btnLessExerciseDate" runtat="server" Text="<" OnClick="btnLessExerciseDate_Click"/>
+            <asp:Button id="btnLessExerciseDate" runat="server" Text="<" OnClick="btnLessExerciseDate_Click"/>
                 <asp:Label id="lblExerciseDate" runat="server" Text=""></asp:Label>
-                <asp:Button id="btnMoreExerciseDate" runtat="server" Text=">" OnClick="btnMoreExerciseDate_Click"/>
+                <asp:Button id="btnMoreExerciseDate" runat="server" Text=">" OnClick="btnMoreExerciseDate_Click"/>
                 <br />
-                <asp:Label ID="lblCurrentDate" runat="server" Text=""></asp:Label>
                 <br />
-                <asp:DropDownList ID="ddlSearchType" runat="server">
+                <asp:DropDownList ID="ddlSearchTypeExercise" runat="server">
                     <asp:ListItem Value="name">By Name</asp:ListItem>
                     <asp:ListItem Value="type">By Type</asp:ListItem>
                     <asp:ListItem Value="category">By Category</asp:ListItem>
@@ -132,7 +141,6 @@
             </asp:View>
             <asp:View ID="Tab3" runat="server">
                 <asp:TextBox ID="waterCount" runat="server"></asp:TextBox>
-                
                 <asp:Button ID="btnWaterSave" runat="server" Text="Button3" />
             </asp:View>
             <asp:View ID="Tab4" runat="server">
