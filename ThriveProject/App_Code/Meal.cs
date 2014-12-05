@@ -43,7 +43,10 @@ public class Meal
         {
             foods.Add(f);
             totalCalories += f.CalorieIntake;
-            servings.Add(serving);
+            if (serving == null)
+                servings.Add(1);
+            else
+                servings.Add(serving);
             return true;
         }
         return false;
