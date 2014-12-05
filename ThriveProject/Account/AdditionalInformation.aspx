@@ -70,9 +70,9 @@
                         </asp:WizardStep>
                         <asp:WizardStep runat="server" title="Step 3">
                             <asp:RaidioButtonList ID="rblWeightGoal" runat="server">
-                                <asp:ListItem Value="lose">I want to lose weight</asp:ListItem>
-                                <asp:ListItem Value="gain">I want to gain weight</asp:ListItem>
-                                <asp:ListItem Value="maintain">I want to maintain my weight</asp:ListItem>
+                                <asp:ListItem Value="0">I want to lose weight</asp:ListItem>
+                                <asp:ListItem Value="1">I want to gain weight</asp:ListItem>
+                                <asp:ListItem Value="2">I want to maintain my weight</asp:ListItem>
                             </asp:RadioButtonList>
                             <asp:TextBox ID="tbSleep" runat="server" Width="92px"></asp:TextBox>
                         </asp:WizardStep>
