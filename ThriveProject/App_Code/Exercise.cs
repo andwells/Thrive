@@ -12,6 +12,12 @@ public class Exercise
     private List<String> category;
     private int type;
 
+    public int ExerciseID
+    {
+        get { return exerciseID; }
+        set { this.exerciseID = value; }
+    }
+
     public int CaloriesBurned
     {
         get { return caloriesBurned; }

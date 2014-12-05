@@ -6,13 +6,19 @@ using System.Web;
 
 public class Workout
 {
-
+    private int id;
     private int totalCalories;
     private String name;
     private DateTime time;
     private List<Exercise> exercises;
     private List<double> exerciseTimes;
 
+    public int Id
+    {
+        get { return id; }
+        set { this.id = value; }
+    }
+    
     public int TotalCalories
     {
         get { return totalCalories; }
@@ -57,6 +63,12 @@ public class Workout
             return true;
         }
         return false;
+    }
+
+    public List<double> ExerciseTimes
+    {
+        get { return exerciseTimes; }
+        set { exerciseTimes = value; }
     }
 
 	public Workout(String name, DateTime time)

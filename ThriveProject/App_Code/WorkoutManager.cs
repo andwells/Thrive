@@ -60,25 +60,27 @@ public class WorkoutManager : IDataManager
         {
             Workout temp = (Workout)a;
             String exercises = "";
-            String servings = "";
+            String times = "";
 
-            foreach(Exercise x in temp.Exercise)
+            foreach(Exercise x in temp.Exercises)
             {
-                exercise+= x.getExerciseID() + ",";
+                exercises+= x.ExerciseID + ",";
             }
 
-            foreach (double d in temp.Servings)
+            foreach (double d in temp.ExerciseTimes)
             {
-                servings += d + ",";
+                times += d + ",";
             }
 
             dsLocal.InsertCommand = "CreateWorkout";
             dsLocal.InsertCommandType = SqlDataSourceCommandType.StoredProcedure;
-            dsLocal.InsertParameters[0].DefaultValue = id.ToString();
-            dsLocal.InsertParameters[1].DefaultValue = temp.Name;
-            dsLocal.InsertParameters[2].DefaultValue = temp.Time.ToShortDateString();
-            dsLocal.InsertParameters[3].DefaultValue = "" + temp.TotalCalories;
-            dsLocal.InsertParameters[4].DefaultValue = "" + servings;
+            dsLocal.InsertParameters[0].DefaultValue = temp.Id.ToString();
+            dsLocal.InsertParameters[1].DefaultValue = "" + temp.TotalCalories;
+            dsLocal.InsertParameters[2].DefaultValue = temp.Name;
+            dsLocal.InsertParameters[3].DefaultValue = temp.Time.ToShortDateString();
+            dsLocal.InsertParameters[4].DefaultValue = exercises;
+            dsLocal.InsertParameters[5].DefaultValue = times;
+            dsLocal.InsertParameters[6].DefaultValue = id.ToString();
             dsLocal.Insert();
             return true;
         }
@@ -91,27 +93,27 @@ public class WorkoutManager : IDataManager
         {
             Workout temp = (Workout)u;
             String exercises = "";
-            String servings = "";
+            String times = "";
             dsLocal.UpdateCommand = "UpdateWorkout";
             dsLocal.UpdateCommandType = SqlDataSourceCommandType.StoredProcedure;
 
-            foreach (Food f in temp.Foods)
+            foreach (Exercise e in temp.Exercises)
             {
-                foods += f.getFoodID() + ",";
+                exercises += e + ",";
             }
 
-            foreach (Double d in servings)
+            foreach (double t in temp.ExerciseTimes)
             {
-                servings += d + ",";
+                times += t + ",";
             }
-            
-            dsLocal.UpdateParameters[0].DefaultValue = "id"; //Not working
-            dsLocal.UpdateParameters[1].DefaultValue = "" + id;
+
+            dsLocal.UpdateParameters[0].DefaultValue = temp.Id.ToString();
+            dsLocal.UpdateParameters[1].DefaultValue = "" + temp.TotalCalories;
             dsLocal.UpdateParameters[2].DefaultValue = temp.Name;
             dsLocal.UpdateParameters[3].DefaultValue = temp.Time.ToShortDateString();
-            dsLocal.UpdateParameters[4].DefaultValue = "" + temp.TotalCalories;
-            dsLocal.UpdateParameters[5].DefaultValue = foods;
-            dsLocal.UpdateParameters[6].DefaultValue = servings;
+            dsLocal.UpdateParameters[4].DefaultValue = exercises;
+            dsLocal.UpdateParameters[5].DefaultValue = times;
+            dsLocal.UpdateParameters[6].DefaultValue = id.ToString();
             dsLocal.Update();
             return true;
         }
