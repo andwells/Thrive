@@ -69,19 +69,28 @@
                             </asp:RadioButtonList>
                         </asp:WizardStep>
                         <asp:WizardStep runat="server" title="Step 3">
+                            <asp:RaidioButtonList ID="rblWeightGoal" runat="server">
+                                <asp:ListItem Value="lose">I want to lose weight</asp:ListItem>
+                                <asp:ListItem Value="gain">I want to gain weight</asp:ListItem>
+                                <asp:ListItem Value="maintain">I want to maintain my weight</asp:ListItem>
+                            </asp:RadioButtonList>
+                            <asp:TextBox ID="tbSleep" runat="server" Width="92px"></asp:TextBox>
+                        </asp:WizardStep>
+                        <asp:WizardStep runat="server" title="Step 4">
                             <asp:RaidioButtonList ID="rblHydrationTracking" runat="server">
                                 <asp:ListItem Value="yes">I want to track hydration</asp:ListItem>
                                 <asp:ListItem Value="no">I do not want to track hydration</asp:ListItem>
                             </asp:RadioButtonList>
                             <<asp:TextBox ID="tbHydration" runat="server" Width="92px"></asp:TextBox>
                         </asp:WizardStep>
-                        <asp:WizardStep runat="server" title="Step 4">
+                        <asp:WizardStep runat="server" title="Step 5">
                             <asp:RaidioButtonList ID="rblSleepTracking" runat="server">
                                 <asp:ListItem Value="yes">I want to track sleep</asp:ListItem>
                                 <asp:ListItem Value="no">I do not want to track sleep</asp:ListItem>
                             </asp:RadioButtonList>
                             <asp:TextBox ID="tbSleep" runat="server" Width="92px"></asp:TextBox>
                         </asp:WizardStep>
+                        
                     </WizardSteps>
                 </asp:Wizard>
                 
