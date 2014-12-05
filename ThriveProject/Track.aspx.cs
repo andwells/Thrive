@@ -209,4 +209,54 @@ public partial class Track : System.Web.UI.Page
         //logic for binding based on new date
     }
     
+    protected void btnLessExerciseDate_Click(object sender, EventArgs e)
+    {
+        currentDate.AddDays(-1);
+        
+        //logic for binding based on new date
+    }
+    
+    protected void btnMoreExerciseDate_Click(object sender, EventArgs e)
+    {
+        currentDate.AddDays(1);
+        
+        //logic for binding based on new date
+    }
+    
+    protected void btnSearchExercise_Click(object sender, EventArgs e)
+    {
+        String type = ddlSearchType.SelectedValue;
+        String query = tbExercise.Text;
+        switch (type)
+        {
+            case "name":
+                DataView temp = (DataView)manager.Search(query);
+                Session["Dataview"] = temp;
+
+                if (temp == null || temp.Table.Rows.Count == 0)
+                {
+                    // need to replace logic for exercise instead of food
+                    gvResults.Visible = false;
+                    lblError.Visible = true;
+                    lblError.Text = "The exercise you are looking for does not exist. Do you want to create it?";
+                    lbtnCreate.Visible = true;
+                }
+                else
+                {
+                    gvResults.Visible = true;
+                    gvResults.DataSource = temp;
+                    gvResults.DataBind();
+                }
+                break;
+            case "type":
+                manager.searchByType(query);
+                break;
+            case "category":
+                manager.searchByCategory(query);
+                break;
+            default:
+                return;
+        }
+    }
+    
 }
