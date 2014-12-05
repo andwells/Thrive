@@ -36,7 +36,7 @@ public class Exercise
         set { category = value; }
     }
     
-    public int Type
+    public String Type
     {
         get { return type; }
         set { type = value; }
