@@ -27,7 +27,11 @@ public partial class Account_AdditionalInformation : System.Web.UI.Page
         int age = Int32.Parse(tbAge.Text);
         String gender = ddlGender.SelectedValue; 
         int weightGoal = Int32.Parse(rblWeightGoal.SelectedValue);
-
+        int sleepFlag = Int32.Parse(rblSleepTracking.SelectedValue);
+        String sleepGoal = tbSleep.Text;
+        int hydrationFlag = Int32.Parse(rblHydrationtracking.SelectedValue);
+        String hydrationGoal = tbHydration.Text;
+        
         // Insert a new record into UserProfiles
         string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
         string insertSql = "UpdateProfile";
@@ -44,10 +48,10 @@ public partial class Account_AdditionalInformation : System.Web.UI.Page
             myCommand.Parameters.AddWithValue("@Gender", gender);
 
             //The following items need to be updated with information collected from the form
-            myCommand.Parameters.AddWithValue("@SleepFlag", 0);
-            myCommand.Parameters.AddWithValue("@SleepGoal", "");
-            myCommand.Parameters.AddWithValue("@HydrationFlag", 0);
-            myCommand.Parameters.AddWithValue("@HydrationGoal", "");
+            myCommand.Parameters.AddWithValue("@SleepFlag", sleepFlag);
+            myCommand.Parameters.AddWithValue("@SleepGoal", sleepGoal);
+            myCommand.Parameters.AddWithValue("@HydrationFlag", hydrationFlag);
+            myCommand.Parameters.AddWithValue("@HydrationGoal", hydrationGoal);
             //myCommand.Parameters.AddWithValue("@StressFlag", 0);
             //myCommand.Parameters.AddWithValue("@StressGoal", "");
             myCommand.Parameters.AddWithValue("@WeightManagementGoal", weightGoal);
