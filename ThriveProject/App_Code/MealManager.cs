@@ -128,7 +128,7 @@ public class MealManager : IDataManager
         dsLocal.SelectCommand = "QueryMeals";
         dsLocal.SelectCommandType = SqlDataSourceCommandType.StoredProcedure;
         dsLocal.SelectParameters[0].DefaultValue = name;
-        dsLocal.SelectParameters.Add("userID", "" + id);
+        dsLocal.SelectParameters.Add("userID", id.ToString());
         return (DataView)dsLocal.Select(DataSourceSelectArguments.Empty);
     }
 

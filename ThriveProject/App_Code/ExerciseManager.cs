@@ -72,7 +72,7 @@ public class ExerciseManager : ISearchableDataManager
             {
                 tempDS = dsLocal;
 
-                tempDS.SelectCommand = "GetFood";
+                tempDS.SelectCommand = "GetExercise";
                 tempDS.SelectCommandType = SqlDataSourceCommandType.StoredProcedure;
             }
             else
@@ -84,8 +84,8 @@ public class ExerciseManager : ISearchableDataManager
 
 
             int id = 0, calories = 0;
-            String name = "", servingSize = "";
-            bool isRestaurant = false;
+            String name = "", exerciseTime = "";
+            String type = "";
             List<String> categories = new List<String>();
 
             results.Read();
@@ -94,15 +94,12 @@ public class ExerciseManager : ISearchableDataManager
                 id = results.GetInt32(0);
                 calories = results.GetInt32(3);
                 name = results.GetString(2);
-                if (!results[4].Equals(DBNull.Value))
-                {
-                    isRestaurant = results.GetBoolean(4);
-                }
+                type = results.GetString(4);
                 if (!results[5].Equals(DBNull.Value))
                 {
                     categories.AddRange(results.GetString(5).Split(','));
                 }
-                servingSize = results.GetString(6);
+                exerciseTime = results.GetString(6);
 
             }
             else
@@ -111,7 +108,7 @@ public class ExerciseManager : ISearchableDataManager
             }
 
 
-            return new Food(id, calories, name, categories, isRestaurant, servingSize);
+            return new Exercise(id, calories, name, categories, type);
         }
         return null;
     }
