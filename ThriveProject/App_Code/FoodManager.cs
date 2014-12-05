@@ -65,6 +65,7 @@ public class FoodManager : ISearchableDataManager
     {
         if(g.GetType().Name.Equals("String"))
         {
+            //Re-write this section to account for the fact that we may not need to know which DB to search in
             SqlDataSource tempDS;
             String[] items = ((String)g).Split(';');
             if (items[0].Equals("local"))
@@ -79,35 +80,34 @@ public class FoodManager : ISearchableDataManager
                 tempDS = dsAPI;
             }
             tempDS.SelectParameters[0].DefaultValue = items[1];
-            IDataReader results = (IDataReader)tempDS.Select(DataSourceSelectArguments.Empty);
-
+            DataView results = (DataView)tempDS.Select(DataSourceSelectArguments.Empty);
 
             int id = 0, calories = 0;
             String name = "", servingSize = "";
             bool isRestaurant = false;
             List<String> categories = new List<String>();
 
-            results.Read();
-            if (items[0].Equals("local"))
-            {
-                id = results.GetInt32(0);
-                calories = results.GetInt32(3);
-                name = results.GetString(2);
-                if (!results[4].Equals(DBNull.Value))
+            //results.Read();
+            //if (items[0].Equals("local"))
+            //{
+                id = Int32.ParseInt(results.Row[0].Cells[0]);
+                calories = Int32.ParseInt(results.Row[0].Cells[3]);
+                name = results.Row[0].Cells[2];
+                if (!results.Row[0].Cells[4].Equals(DBNull.Value))
                 {
-                    isRestaurant = results.GetBoolean(4);
+                  isRestaurant = Boolean.ParseBoolean(results.Row[0].Cells[4]);
                 }
-                if (!results[5].Equals(DBNull.Value))
+                if (!results.Row[0].Cells[5].Equals(DBNull.Value))
                 {
-                    categories.AddRange(results.GetString(5).Split(','));
+                    categories.AddRange(results.Row[0].Cells[5].Split(','));
                 }
-                servingSize = results.GetString(6);
+                servingSize = results.Row[0].Cells[6];
 
-            }
-            else
-            {
+            //}
+            //else
+            //{
                 //Fill in other info
-            }
+            //}
 
 
             return new Food(id, calories, name, categories, isRestaurant, servingSize);
