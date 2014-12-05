@@ -116,6 +116,17 @@
                 </section>
             </asp:View>
             <asp:View ID="Tab2" runat="server">
+            <asp:Button id="btnLessExerciseDate" runtat="server" Text="<" OnClick="btnLessExerciseDate_Click"/>
+                <asp:Label id="lblExerciseDate" runat="server" Text=""></asp:Label>
+                <asp:Button id="btnMoreExerciseDate" runtat="server" Text=">" OnClick="btnMoreExerciseDate_Click"/>
+                <br />
+                <asp:Label ID="lblCurrentDate" runat="server" Text=""></asp:Label>
+                <br />
+                <asp:DropDownList ID="ddlSearchType" runat="server">
+                    <asp:ListItem Value="name">By Name</asp:ListItem>
+                    <asp:ListItem Value="type">By Type</asp:ListItem>
+                    <asp:ListItem Value="category">By Category</asp:ListItem>
+                </asp:DropDownList>
                 <asp:TextBox ID="tbExercise" runat="server"></asp:TextBox>
                 <asp:Button ID="btnSearchExercise" runat="server" Text="Button2" />
             </asp:View>
