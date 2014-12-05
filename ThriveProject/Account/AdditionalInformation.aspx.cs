@@ -26,6 +26,7 @@ public partial class Account_AdditionalInformation : System.Web.UI.Page
         int weight = Int32.Parse(tbWeight.Text);
         int age = Int32.Parse(tbAge.Text);
         String gender = ddlGender.SelectedValue; 
+        int weightGoal = Int32.Parse(rblWeightGoal.SelectedValue);
 
         // Insert a new record into UserProfiles
         string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
@@ -49,7 +50,7 @@ public partial class Account_AdditionalInformation : System.Web.UI.Page
             myCommand.Parameters.AddWithValue("@HydrationGoal", "");
             //myCommand.Parameters.AddWithValue("@StressFlag", 0);
             //myCommand.Parameters.AddWithValue("@StressGoal", "");
-            myCommand.Parameters.AddWithValue("@WeightManagementGoal", 0);
+            myCommand.Parameters.AddWithValue("@WeightManagementGoal", weightGoal);
             myCommand.ExecuteNonQuery();
             myConnection.Close();
         }
