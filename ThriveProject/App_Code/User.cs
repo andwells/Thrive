@@ -125,7 +125,7 @@ public class User
         this.weightManagementgoal = weightManagementgoal;
         //this.password = password;
         this.username = username;
-        this.userID = UserID;
+        this.userID = UserId;
         //this.groups = groups;
 	}
 }

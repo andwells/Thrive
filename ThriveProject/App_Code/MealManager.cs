@@ -23,7 +23,7 @@ public class MealManager : IDataManager
         id = userID;
 	}
 
-    object IDataManager.Get(object g)
+    override object Get(object g)
     {
         String name = g.GetType().Name;
         String id;
@@ -77,7 +77,7 @@ public class MealManager : IDataManager
             dsLocal.InsertParameters.Add("userID", id.ToString());
             //dsLocal.InsertParameters[0].DefaultValue = id.ToString();
             dsLocal.InsertParameters[0].DefaultValue = temp.Name;
-            dsLocal.InsertParameters.Add("time", temp.Time.ToString("yyyy-MM-dd"));
+            dsLocal.InsertParameters.Add("time", DbType.String, temp.Time.ToString("yyyy-MM-dd"));
             //dsLocal.InsertParameters[2].DefaultValue = temp.Time.ToString("yyyy-MM-dd");
             dsLocal.InsertParameters[1].DefaultValue = "" + temp.TotalCalories;
             dsLocal.InsertParameters[2].DefaultValue = "" + foods;
@@ -133,7 +133,12 @@ public class MealManager : IDataManager
         dsLocal.SelectCommandType = SqlDataSourceCommandType.StoredProcedure;
         dsLocal.SelectParameters.Add("time", name);
         dsLocal.SelectParameters.Add("userId", id.ToString());
-        return (DataView)dsLocal.Select(DataSourceSelectArguments.Empty);
+        Parameter param = new Parameter("return");
+        param.Direction = ParameterDirection.ReturnValue;
+        dsLocal.SelectParameters.Add(param);
+        DataView x =  (DataView)dsLocal.Select(DataSourceSelectArguments.Empty);
+
+        return x;
     }
 
     bool IDataManager.Close()

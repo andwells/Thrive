@@ -39,6 +39,7 @@ public partial class Track : System.Web.UI.Page
         else
         {
             manager = new FoodManager(sqlDSLocal, sqlDSAccess, ((User)Session["User"]).UserID);
+            Session["Manager"] = manager;
         }
 
         if (Session["MealManager"] != null)
@@ -55,7 +56,7 @@ public partial class Track : System.Web.UI.Page
             this.meals = new Dictionary<string, Meal>();
             IDataManager x = new MealManager(dsMeals, ((User)Session["User"]).UserID);
             //Adjust to account for structure of object
-            object t = x.Search(currentDate.ToString("yyyy-MM-dd"));
+            DataView t = (DataView)x.Search(currentDate.ToString("yyyy-mm-dd"));
 
             Session["Meals"] = this.meals;
         }

@@ -48,8 +48,6 @@
             <asp:Parameter Name="Servings" Type="String"></asp:Parameter>
         </InsertParameters>
         <SelectParameters>
-            <asp:Parameter Name="time" DbType="Date"></asp:Parameter>
-            <asp:Parameter Name="userId" Type="Object"></asp:Parameter>
         </SelectParameters>
                         <UpdateParameters>
                             <asp:Parameter Name="Name" Type="String"></asp:Parameter>
@@ -120,11 +118,12 @@
                             <asp:Label ID="lblMealName" runat="server" Text="Meal Name" Visible="false"></asp:Label>
                             <asp:TextBox ID="tbEnterMealName" runat="server" Visible="false"></asp:TextBox>
                             <asp:Button ID="btnAddFood" runat="server" Text="Add Food" Visible="false" OnClick="btnAddFood_Click"/>
+                            <asp:GridView ID="gvTodayMeals" runat="server"></asp:GridView>
                         </section>
                         </ContentTemplate>
                 </asp:UpdatePanel>
                 <section id ="TodaysMeals">
-                    <asp:GridView ID="gvTodayMeals" runat="server"></asp:GridView>
+                    
                 </section>
             </asp:View>
             <asp:View ID="Tab2" runat="server">
