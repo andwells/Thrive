@@ -74,9 +74,11 @@ public class MealManager : IDataManager
 
             dsLocal.InsertCommand = "CreateMeal";
             dsLocal.InsertCommandType = SqlDataSourceCommandType.StoredProcedure;
-            dsLocal.InsertParameters[0].DefaultValue = id.ToString();
+            dsLocal.InsertParameters.Add("userID", id.ToString());
+            //dsLocal.InsertParameters[0].DefaultValue = id.ToString();
             dsLocal.InsertParameters[1].DefaultValue = temp.Name;
-            dsLocal.InsertParameters[2].DefaultValue = temp.Time.ToShortDateString();
+            dsLocal.UpdateParameters.Add("time", temp.Time.ToShortDateString());
+            //dsLocal.InsertParameters[2].DefaultValue = temp.Time.ToString("yyyy-MM-dd");
             dsLocal.InsertParameters[3].DefaultValue = "" + temp.TotalCalories;
             dsLocal.InsertParameters[4].DefaultValue = "" + servings;
             dsLocal.Insert();
@@ -104,11 +106,12 @@ public class MealManager : IDataManager
             {
                 servings += d + ",";
             }
-            
-            dsLocal.UpdateParameters[0].DefaultValue = "id"; //Not working
+
+            dsLocal.UpdateParameters.Add("userID", id.ToString());
             dsLocal.UpdateParameters[1].DefaultValue = "" + id;
             dsLocal.UpdateParameters[2].DefaultValue = temp.Name;
-            dsLocal.UpdateParameters[3].DefaultValue = temp.Time.ToShortDateString();
+            dsLocal.UpdateParameters.Add("time", temp.Time.ToShortDateString());
+            //dsLocal.UpdateParameters[3].DefaultValue = temp.Time.ToShortDateString();
             dsLocal.UpdateParameters[4].DefaultValue = "" + temp.TotalCalories;
             dsLocal.UpdateParameters[5].DefaultValue = foods;
             dsLocal.UpdateParameters[6].DefaultValue = servings;

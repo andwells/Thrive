@@ -42,10 +42,8 @@
             <asp:Parameter Name="MealId" Type="Int32"></asp:Parameter>
         </DeleteParameters>
         <InsertParameters>
-            <asp:Parameter Name="UserId" Type="Object"></asp:Parameter>
             <asp:Parameter Name="Name" Type="String"></asp:Parameter>
             <asp:Parameter Name="TotalCalories" Type="Double"></asp:Parameter>
-            <asp:Parameter Name="Time" Type="DateTime"></asp:Parameter>
             <asp:Parameter Name="Foods" Type="String"></asp:Parameter>
             <asp:Parameter Name="Servings" Type="String"></asp:Parameter>
         </InsertParameters>
@@ -54,7 +52,6 @@
             <asp:Parameter Name="userId" Type="Object"></asp:Parameter>
         </SelectParameters>
                         <UpdateParameters>
-                            <asp:Parameter Name="UserId" Type="Object"></asp:Parameter>
                             <asp:Parameter Name="Name" Type="String"></asp:Parameter>
                             <asp:Parameter Name="TotalCalories" Type="Double"></asp:Parameter>
                             <asp:Parameter Name="Time" Type="DateTime"></asp:Parameter>
@@ -82,15 +79,17 @@
                 <asp:Button id="btnMoreFoodDate" runat="server" Text=">" OnClick="btnMoreFoodDate_Click"/>
                 <br />
                 <br />
-                <asp:DropDownList ID="ddlSearchType" runat="server">
-                    <asp:ListItem Value="name">By Name</asp:ListItem>
-                    <asp:ListItem Value="type">By Type</asp:ListItem>
-                    <asp:ListItem Value="category">By Category</asp:ListItem>
-                </asp:DropDownList>
-                <asp:TextBox ID="tbFood" runat="server"></asp:TextBox>
-                <asp:Button ID="btnSearchFood" runat="server" Text="Search" OnClick="btnSearchFood_Click" />
+                <asp:Panel ID="pnlSearchFood" runat="server" DefaultButton="btnSearchFood">
+                    <asp:DropDownList ID="ddlSearchType" runat="server">
+                        <asp:ListItem Value="name">By Name</asp:ListItem>
+                        <asp:ListItem Value="type">By Type</asp:ListItem>
+                        <asp:ListItem Value="category">By Category</asp:ListItem>
+                    </asp:DropDownList>
+                    <asp:TextBox ID="tbFood" runat="server" ></asp:TextBox>
+                    <asp:Button ID="btnSearchFood" runat="server" Text="Search" OnClick="btnSearchFood_Click" />
+                </asp:Panel>
                 <br />
-                <asp:Label ID="lblError" runat="server" Visible="false"></asp:Label><asp:LinkButton ID="lbtnCreate" runat="server" visble="true" Text="Create New Food?" OnClick="lbtnCreate_Click"></asp:LinkButton>
+                <asp:Label ID="lblError" runat="server" Visible="false"></asp:Label><asp:LinkButton ID="lbtnCreate" runat="server" visble="false" Text="Create New Food?" OnClick="lbtnCreate_Click"></asp:LinkButton>
                 <br />
                 <section id="createFood">
                     <asp:Panel ID="pnlCreateFood" runat="server" Visible="false">

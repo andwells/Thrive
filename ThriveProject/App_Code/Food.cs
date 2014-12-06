@@ -68,7 +68,6 @@ public class Food
         this.servingSize = servingSize;
 	}
 
-
     public override String ToString()
     {
         return String.Format("{0}, {1}, {2}, {3}, {4}", this.foodID, this.name, this.calorieIntake, this.restaurantFlag, this.category);   
