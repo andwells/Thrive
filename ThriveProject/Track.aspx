@@ -95,17 +95,19 @@
                 <section id="createFood">
                     <asp:Panel ID="pnlCreateFood" runat="server" Visible="false">
                         <h3>Create Food</h3>
-                        <asp:Label ID="lblFoodName" runat="server" Text="Label"></asp:Label>
+                        <asp:Label ID="lblFoodName" runat="server" Text="Food Name: "></asp:Label>
                         <asp:TextBox ID="tbFoodName" runat="server"></asp:TextBox>
-                        <asp:Label ID="lblCalories" runat="server" Text="Label"></asp:Label>
+                        <asp:Label ID="lblCalories" runat="server" Text="Calories: "></asp:Label>
                         <asp:TextBox ID="tbCalories" runat="server"></asp:TextBox>
-                        <asp:Label ID="lblCategories" runat="server" Text="Label"></asp:Label>
+                        <asp:Label ID="lblCategories" runat="server" Text="Categories (seperated by a ,): "></asp:Label>
                         <asp:TextBox ID="tbCategories" runat="server"></asp:TextBox>
-                        <asp:Label ID="Label1" runat="server" Text="Label"></asp:Label>
+                        <asp:Label ID="lblIsRestaurant" runat="server" Text="Is Restaurant?: "></asp:Label>
                         <asp:CheckBox ID="cbIsRestaurant" runat="server" />
-                        <asp:Label ID="lblServingSize" runat="server" Text="Label"></asp:Label>
+                        <asp:Label ID="lblServingSize" runat="server" Text="Serving Size: "></asp:Label>
                         <asp:TextBox ID="tbServingSize" runat="server"></asp:TextBox>
-                        <asp:Button ID="btnCreateFood" runat="server" Text="Create"/>
+                        <asp:Label ID="lblServingsEaten" runat="server" Text="Servings Eaten: "></asp:Label>
+                        <asp:TextBox ID="tbServingsEaten" runat="server"></asp:TextBox>
+                        <asp:Button ID="btnCreateFood" runat="server" Text="Create" OnClick="btnCreateFood_Click"/>
                     </asp:Panel>
                 </section>
                 <asp:UpdatePanel ID="UpdatePanel1" runat="server">

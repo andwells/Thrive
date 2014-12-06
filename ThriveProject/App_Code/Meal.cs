@@ -73,6 +73,7 @@ public class Meal
         this.name = name;
         this.time = time;
         foods = new List<Food>();
+        servings = new List<double>();
 	}
     
     public Meal(String name, DateTime time, List<Food> foods, List<double> servings)
