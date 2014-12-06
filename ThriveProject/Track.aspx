@@ -49,15 +49,14 @@
         </InsertParameters>
         <SelectParameters>
         </SelectParameters>
-                        <UpdateParameters>
-                            <asp:Parameter Name="Name" Type="String"></asp:Parameter>
-                            <asp:Parameter Name="TotalCalories" Type="Double"></asp:Parameter>
-                            <asp:Parameter Name="Time" Type="DateTime"></asp:Parameter>
-                            <asp:Parameter Name="Foods" Type="String"></asp:Parameter>
-                            <asp:Parameter Name="Servings" Type="String"></asp:Parameter>
-                            <asp:Parameter Name="MealId" Type="Int32"></asp:Parameter>
-                        </UpdateParameters>
-                    </asp:SqlDataSource>
+        <UpdateParameters>
+            <asp:Parameter Name="Name" Type="String"></asp:Parameter>
+            <asp:Parameter Name="TotalCalories" Type="Double"></asp:Parameter>
+            <asp:Parameter Name="Foods" Type="String"></asp:Parameter>
+            <asp:Parameter Name="Servings" Type="String"></asp:Parameter>
+            <asp:Parameter Name="MealId" Type="Int32"></asp:Parameter>
+        </UpdateParameters>
+    </asp:SqlDataSource>
     <section id="track">
         <asp:Menu ID="trackMenu" Width="500px" runat="server" Orientation="Horizontal" StaticEnableDefaultPopOutImage="False" OnMenuItemClick="Menu1_MenuItemClick">
             <Items>
@@ -112,12 +111,14 @@
                         <asp:GridView ID="gvResults" runat="server" AutoGenerateSelectButton="true" AllowPaging="true" OnPageIndexChanging="gvResults_PageIndexChanging" OnSelectedIndexChanged="gvResults_SelectedIndexChanged" OnRowDataBound="gvResults_RowDataBound"></asp:GridView>
                         <br />
                         <section id="selectedFood">
-                            <asp:Label ID="lblFoodDesc" runat="server" Text="" Visible="false"></asp:Label><br />
-                            <asp:Label ID="lblServings" runat="server" Text="How much did you eat?" Visible="false"></asp:Label>
-                            <asp:TextBox ID="tbServings" runat="server" Visible="false"></asp:TextBox> 
-                            <asp:Label ID="lblMealName" runat="server" Text="Meal Name" Visible="false"></asp:Label>
-                            <asp:TextBox ID="tbEnterMealName" runat="server" Visible="false"></asp:TextBox>
-                            <asp:Button ID="btnAddFood" runat="server" Text="Add Food" Visible="false" OnClick="btnAddFood_Click"/>
+                            <asp:Panel ID="pnlAddFood" runat="server" Visible="false" DefaultButton="btnAddFood">
+                                <asp:Label ID="lblFoodDesc" runat="server" Text="" ></asp:Label><br />
+                                <asp:Label ID="lblServings" runat="server" Text="How much did you eat?"></asp:Label>
+                                <asp:TextBox ID="tbServings" runat="server" ></asp:TextBox> 
+                                <asp:Label ID="lblMealName" runat="server" Text="Meal Name"></asp:Label>
+                                <asp:TextBox ID="tbEnterMealName" runat="server"></asp:TextBox>
+                                <asp:Button ID="btnAddFood" runat="server" Text="Add Food" OnClick="btnAddFood_Click"/>
+                            </asp:Panel>
                             <asp:GridView ID="gvTodayMeals" runat="server"></asp:GridView>
                         </section>
                         </ContentTemplate>

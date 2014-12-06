@@ -65,34 +65,70 @@ public class FoodManager : ISearchableDataManager
     {
         if(g.GetType().Name.Equals("String"))
         {
-            //Re-write this section to account for the fact that we may not need to know which DB to search in
+            DataView results;
             SqlDataSource tempDS;
-            String[] items = ((String)g).Split(';');
-            if (items[0].Equals("local"))
+            String foodID = (string)g;
+            bool isOfficialFood = (foodID.CompareTo("100000") >= 0);
+            if (isOfficialFood)
             {
                 tempDS = dsLocal;
-
                 tempDS.SelectCommand = "GetFood";
                 tempDS.SelectCommandType = SqlDataSourceCommandType.StoredProcedure;
+
+                ParameterCollection tempCol = new ParameterCollection();
+                foreach (Parameter p in tempDS.SelectParameters)
+                {
+                    tempCol.Add(p);
+                }
+
+                tempDS.SelectParameters.Clear();
+                tempDS.SelectParameters.Add("FoodID", foodID);
+
+                results = (DataView)tempDS.Select(DataSourceSelectArguments.Empty);
+
+                tempDS.SelectParameters.RemoveAt(0);
+
+                foreach (Parameter p in tempCol)
+                {
+                    tempDS.SelectParameters.Add(p);
+                }
             }
             else
             {
                 tempDS = dsAPI;
-            }
-            tempDS.SelectParameters[0].DefaultValue = items[1];
-            DataView results = (DataView)tempDS.Select(DataSourceSelectArguments.Empty);
+                tempDS.SelectParameters[0].DefaultValue = foodID;
+                results = (DataView)tempDS.Select(DataSourceSelectArguments.Empty);
 
+            }
+            //Re-write this section to account for the fact that we may not need to know which DB to search in
+            
+            //String[] items = ((String)g).Split(';');
+            //if (items[0].Equals("local"))
+            //{
+            //    tempDS = dsLocal;
+
+            //    tempDS.SelectCommand = "GetFood";
+            //    tempDS.SelectCommandType = SqlDataSourceCommandType.StoredProcedure;
+            //}
+            //else
+            //{
+            //    tempDS = dsAPI;
+            //}
+            //Make back up parameters
+            
+            
+            
             int id = 0, calories = 0;
             String name = "", servingSize = "";
             bool isRestaurant = false;
             List<String> categories = new List<String>();
                        
-            id = Int32.Parse((String)results.Table.Rows[0][0]);
-            calories = Int32.Parse((String)results.Table.Rows[0][3]);
+            id = (int)results.Table.Rows[0][0];
             name = (String)results.Table.Rows[0][2];
+            calories = (int)results.Table.Rows[0][3];
             if (!results.Table.Rows[0][4].Equals(DBNull.Value))
             {
-                isRestaurant = Boolean.Parse((String)results.Table.Rows[0][4]);
+                isRestaurant = (bool)results.Table.Rows[0][4];
             }
             if (!results.Table.Rows[0][5].Equals(DBNull.Value))
             {
@@ -159,6 +195,7 @@ public class FoodManager : ISearchableDataManager
 
     object IDataManager.Search(string name)
     {
+        dsAPI.SelectParameters[0].DefaultValue = name;
         DataView apiResult = (DataView)dsAPI.Select(DataSourceSelectArguments.Empty);
         dsLocal.SelectCommand = "QueryFoods";
         dsLocal.SelectCommandType = SqlDataSourceCommandType.StoredProcedure;

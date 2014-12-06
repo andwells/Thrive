@@ -11,7 +11,9 @@ public class Meal
     private DateTime time;
     private List<Food> foods;
     private List<double> servings;
-    private int foodId;
+    private int mealID;
+
+    
     private Guid userId;
 
     public int TotalCalories
@@ -39,14 +41,15 @@ public class Meal
 
     public bool addFood(Food f, double serving)
     {
-        if(!foods.Contains(f))
-        {
-            foods.Add(f);
-            totalCalories += f.CalorieIntake;
-            servings.Add(serving);
-            return true;
-        }
-        return false;
+        foods.Add(f);
+        totalCalories += f.CalorieIntake;
+        servings.Add(serving);
+        return true;
+    }
+
+    public int MealID
+    {
+        get { return mealID; }
     }
 
     public bool deleteFood(Food f)
@@ -76,9 +79,11 @@ public class Meal
         servings = new List<double>();
 	}
     
-    public Meal(String name, DateTime time, List<Food> foods, List<double> servings)
+    public Meal(int anId, Guid uID, int tCal, String name, DateTime time, List<Food> foods, List<double> servings)
     {
-        totalCalories = 0;
+        this.mealID = anId;
+        this.userId = uID;
+        totalCalories = tCal;
         this.name = name;
         this.time = time;
         this.foods = foods;

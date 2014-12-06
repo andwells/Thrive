@@ -17,7 +17,7 @@ public partial class Track : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         #region"Load objects from session"
-        if (!IsPostBack)
+        if (Session["CurrentDate"] == null)
         {
             currentDate = DateTime.Today;
             Session["CurrentDate"] = currentDate;
@@ -48,22 +48,42 @@ public partial class Track : System.Web.UI.Page
         }
         else
         {
-            mealManager = new MealManager(dsMeals, ((User)Session["User"]).UserID);
+            mealManager = new MealManager(dsMeals, ((User)Session["User"]).UserID, manager);
             Session["MealManager"] = mealManager;
         }
-        if (Session["Meals"] == null)
+        if(MultiView1.ActiveViewIndex == 0)
         {
-            this.meals = new Dictionary<string, Meal>();
-            IDataManager x = new MealManager(dsMeals, ((User)Session["User"]).UserID);
-            //Adjust to account for structure of object
-            DataView t = (DataView)x.Search(currentDate.ToString("yyyy-mm-dd"));
+            if (Session["Meals"] == null)
+            {
+                //mealManager = new MealManager(dsMeals, ((User)Session["User"]).UserID, manager);
 
-            Session["Meals"] = this.meals;
+                this.meals = (Dictionary<String, Meal>)mealManager.Search(currentDate.ToString("yyyy-MM-dd"));
+
+                DataTable table = buildMealsTable();
+                gvTodayMeals.DataSource = table;
+                gvTodayMeals.DataBind();
+
+                Session["MealsTable"] = table;
+
+                Session["Meals"] = this.meals;
+                Session["MealManager"] = mealManager;
+
+            }
+            else
+            {
+                meals = (Dictionary<string, Meal>)Session["Meals"];
+
+                DataTable table = buildMealsTable();
+                gvTodayMeals.DataSource = table;
+                gvTodayMeals.DataBind();
+            }
         }
-        else
+
+        if (MultiView1.ActiveViewIndex == 1)
         {
-            meals = (Dictionary<string, Meal>)Session["Meals"];
+            //Do exercise stuff
         }
+
         #endregion
     }
     protected void Menu1_MenuItemClick(object sender, MenuEventArgs e)
@@ -151,12 +171,7 @@ public partial class Track : System.Web.UI.Page
         lblFoodDesc.Text = temp.Name;
         //This works
         gvResults.Visible = false;
-        lblFoodDesc.Visible = true;
-        lblServings.Visible = true;
-        tbServings.Visible = true;
-        lblMealName.Visible = true;
-        tbEnterMealName.Visible = true;
-        btnAddFood.Visible = true;
+        pnlAddFood.Visible = true;
     }
     protected void gvResults_RowDataBound(object sender, GridViewRowEventArgs e)
     {
@@ -200,6 +215,7 @@ public partial class Track : System.Web.UI.Page
         Session["MealsTable"] = table;
         gvTodayMeals.DataSource = table;
         gvTodayMeals.DataBind();
+        pnlAddFood.Visible = false;
     }
 
     private DataTable buildMealsTable()
@@ -230,29 +246,29 @@ public partial class Track : System.Web.UI.Page
     protected void btnLessFoodDate_Click(object sender, EventArgs e)
     {
         currentDate.AddDays(-1);
-        
-        //logic for binding based on new date
+        lblFoodDate.Text = currentDate.ToShortDateString();
+        Session["CurrentDate"] = currentDate;
     }
     
     protected void btnMoreFoodDate_Click(object sender, EventArgs e)
     {
         currentDate.AddDays(1);
-        
-        //logic for binding based on new date
+        lblFoodDate.Text = currentDate.ToShortDateString();
+        Session["CurrentDate"] = currentDate;
     }
     
     protected void btnLessExerciseDate_Click(object sender, EventArgs e)
     {
         currentDate.AddDays(-1);
-        
-        //logic for binding based on new date
+        lblFoodDate.Text = currentDate.ToShortDateString();
+        Session["CurrentDate"] = currentDate;
     }
     
     protected void btnMoreExerciseDate_Click(object sender, EventArgs e)
     {
         currentDate.AddDays(1);
-        
-        //logic for binding based on new date
+        lblFoodDate.Text = currentDate.ToShortDateString();
+        Session["CurrentDate"] = currentDate;
     }
     
     protected void btnSearchExercise_Click(object sender, EventArgs e)
