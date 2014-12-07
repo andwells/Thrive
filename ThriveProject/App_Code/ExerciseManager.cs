@@ -13,16 +13,16 @@ using System.Collections;
 public class ExerciseManager : ISearchableDataManager
 {
 	private IDbCommand apiConnection;
-    	private IDbCommand localConnection;
+    private IDbCommand localConnection;
 	private SqlDataSource dsAPI;
-    	private SqlDataSource dsLocal;
-    	private Guid id;
+    private SqlDataSource dsLocal;
+    private Guid id;
     	
 	public ExerciseManager(SqlDataSource local, SqlDataSource API, Guid userID)
 	{
 		dsAPI = API;
-        	dsLocal = local;
-        	id = userID;
+        dsLocal = local;
+        id = userID;
 	}
 
     object ISearchableDataManager.searchByType(string type)
@@ -49,7 +49,7 @@ public class ExerciseManager : ISearchableDataManager
     	{
     		return false;
     	}
-    	dsLocal.SelectCommand = "QueryFoodCategories";
+    	dsLocal.SelectCommand = "QueryExerciseCategories";
         dsLocal.SelectParameters[0].DefaultValue = category;
         return (DataView)dsLocal.Select(DataSourceSelectArguments.Empty);
     }
@@ -64,51 +64,127 @@ public class ExerciseManager : ISearchableDataManager
     //WARNING!! This method is broken! Needs to be re-written to adjust for checking the range of the ID!
     object IDataManager.Get(object g)
     {
-        if(g.GetType().Name.Equals("String"))
+        if (g.GetType().Name.Equals("String"))
         {
+            DataView results;
             SqlDataSource tempDS;
-            String[] items = ((String)g).Split(';');
-            if (items[0].Equals("local"))
+            String exerciseID = (string)g;
+            int eIDD = Int32.Parse(exerciseID);
+            bool isNotOfficialExercise = (eIDD >= 100000);
+            if (isNotOfficialExercise)
             {
                 tempDS = dsLocal;
-
                 tempDS.SelectCommand = "GetExercise";
                 tempDS.SelectCommandType = SqlDataSourceCommandType.StoredProcedure;
+
+                ParameterCollection tempCol = new ParameterCollection();
+                foreach (Parameter p in tempDS.SelectParameters)
+                {
+                    tempCol.Add(p);
+                }
+
+                tempDS.SelectParameters.Clear();
+                tempDS.SelectParameters.Add("ExerciseID", exerciseID);
+
+                results = (DataView)tempDS.Select(DataSourceSelectArguments.Empty);
+
+                tempDS.SelectParameters.RemoveAt(0);
+
+                foreach (Parameter p in tempCol)
+                {
+                    tempDS.SelectParameters.Add(p);
+                }
             }
             else
             {
                 tempDS = dsAPI;
-            }
-            tempDS.SelectParameters[0].DefaultValue = items[1];
-            IDataReader results = (IDataReader)tempDS.Select(DataSourceSelectArguments.Empty);
+                String backQ = tempDS.SelectCommand;
+                tempDS.SelectCommand = "SELECT Exercises.ID AS exerciseID, Exercises.Metric AS Metric, Exercises.Category AS Categories, Exercises.Description AS Name, Exercises.Type AS Type FROM Exercises WHERE (((Exercises.ID)=[?])) ORDER BY Exercises.Description;";
 
-
-            int id = 0, calories = 0;
-            String name = "", exerciseTime = "";
-            String type = "";
-            List<String> categories = new List<String>();
-
-            results.Read();
-            if (items[0].Equals("local"))
-            {
-                id = results.GetInt32(0);
-                calories = results.GetInt32(3);
-                name = results.GetString(2);
-                type = results.GetString(4);
-                if (!results[5].Equals(DBNull.Value))
+                ParameterCollection tempCol = new ParameterCollection();
+                foreach (Parameter p in tempDS.SelectParameters)
                 {
-                    categories.AddRange(results.GetString(5).Split(','));
+                    tempCol.Add(p);
                 }
-                exerciseTime = results.GetString(6);
 
+                tempDS.SelectParameters.Clear();
+                tempDS.SelectParameters.Add("ExerciseID", exerciseID);
+
+                results = (DataView)tempDS.Select(DataSourceSelectArguments.Empty);
+
+                tempDS.SelectParameters.RemoveAt(0);
+
+                foreach (Parameter p in tempCol)
+                {
+                    tempDS.SelectParameters.Add(p);
+                }
+                tempDS.SelectCommand = backQ;
+            }
+            //Re-write this section to account for the fact that we may not need to know which DB to search in
+
+            //String[] items = ((String)g).Split(';');
+            //if (items[0].Equals("local"))
+            //{
+            //    tempDS = dsLocal;
+
+            //    tempDS.SelectCommand = "GetFood";
+            //    tempDS.SelectCommandType = SqlDataSourceCommandType.StoredProcedure;
+            //}
+            //else
+            //{
+            //    tempDS = dsAPI;
+            //}
+            //Make back up parameters
+
+
+
+            int id = 0;
+            double metric = 0.0; // variable to compute calories burned
+            List<String> categories = new List<String>();
+            String name = ""; // == description
+            double caloriesBurned = 0.0;
+            String type = ""; // (an)aerobic
+
+            id = (int)results.Table.Rows[0][0];
+            if (isNotOfficialExercise)
+            {
+                name = (String)results.Table.Rows[0][2];
+                caloriesBurned = (double)results.Table.Rows[0][3];
+                if ((bool)results.Table.Rows[0][4] == true)
+                {
+                    type = "Aerobic";
+                }
+                else
+                {
+                    type = "Anaerobic";
+                }
+                categories = (List<String>)results.Table.Rows[0][5];
             }
             else
             {
-                //Fill in other info
+                name = (String)results.Table.Rows[0][3];
+                metric = (int)results.Table.Rows[0][1];
+/////////////// THIS IS WHERE GULLY STOPPED
+            }
+            metric = (int)results.Table.Rows[0][3];
+            if (isNotOfficialFood && !results.Table.Rows[0][4].Equals(DBNull.Value))
+            {
+                isRestaurant = (bool)results.Table.Rows[0][4];
+            }
+            if (isNotOfficialFood && !results.Table.Rows[0][5].Equals(DBNull.Value))
+            {
+                categories.AddRange(((String)results.Table.Rows[0][5]).Split(','));
+            }
+            else
+            {
+                categories.Add("");
+            }
+            if (isNotOfficialFood)
+            {
+
             }
 
-
-            return new Exercise(id, calories, name, categories, type);
+            return new Exercise(id, metric, name, categories, isRestaurant, servingSize);
         }
         return null;
     }
@@ -116,7 +192,7 @@ public class ExerciseManager : ISearchableDataManager
     object IDataManager.Add(object a)
     {
         //Add logic to ensure stored procedure is correct
-        if(a.GetType().Name.Equals("Exercise"))
+        if (a.GetType().Name.Equals("Food"))
         {
             Food temp = (Food)a;
             dsLocal.InsertParameters[0].DefaultValue = id.ToString();
@@ -126,7 +202,7 @@ public class ExerciseManager : ISearchableDataManager
             dsLocal.InsertParameters[4].DefaultValue = temp.Category.ToString();
             dsLocal.InsertParameters[5].DefaultValue = temp.ServingSize;
             dsLocal.Insert();
-
+            //Add logic to get return value of stored proc
             return true;
         }
         return false;
@@ -152,13 +228,13 @@ public class ExerciseManager : ISearchableDataManager
 
     object IDataManager.Remove(object r, string id)
     {
-        if(string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
+        if (string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id))
         {
             return false;
         }
         dsLocal.DeleteParameters[0].DefaultValue = id;
-        int numAffected =  dsLocal.Delete();
-        if(numAffected > 0)
+        int numAffected = dsLocal.Delete();
+        if (numAffected > 0)
         {
             return true;
         }
@@ -167,6 +243,7 @@ public class ExerciseManager : ISearchableDataManager
 
     object IDataManager.Search(string name)
     {
+        dsAPI.SelectParameters[0].DefaultValue = name;
         DataView apiResult = (DataView)dsAPI.Select(DataSourceSelectArguments.Empty);
         dsLocal.SelectCommand = "QueryFoods";
         dsLocal.SelectCommandType = SqlDataSourceCommandType.StoredProcedure;
@@ -180,7 +257,7 @@ public class ExerciseManager : ISearchableDataManager
                 return result2;
             }
         }
-        return apiResult; 
+        return apiResult;
     }
 
     bool IDataManager.Close()
