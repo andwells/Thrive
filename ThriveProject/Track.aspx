@@ -86,7 +86,9 @@
                     <asp:Button ID="btnSearchFood" runat="server" Text="Search" OnClick="btnSearchFood_Click" />
                 </asp:Panel>
                 <br />
-                <asp:Label ID="lblError" runat="server" Visible="false"></asp:Label><asp:LinkButton ID="lbtnCreate" runat="server" visble="false" Text="Create New Food?" OnClick="lbtnCreate_Click"></asp:LinkButton>
+                <asp:Panel ID="pnlFoodError" runat="server" Visible="false">
+                    <asp:Label ID="lblError" runat="server" Visible="true" Text="The food you are looking for does not exist."></asp:Label><asp:LinkButton ID="lbtnCreate" runat="server" visble="false" Text="Create New Food?" OnClick="lbtnCreate_Click" Visible="true"></asp:LinkButton>
+                </asp:Panel>
                 <br />
                 <section id="createFood">
                     <asp:Panel ID="pnlCreateFood" runat="server" Visible="false">

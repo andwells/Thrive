@@ -10,7 +10,6 @@ public partial class Track : System.Web.UI.Page
 {
     private ISearchableDataManager manager;
     private IDataManager mealManager;
-    private Boolean mealsCreated;
     private Dictionary<String, Meal> meals;
     private DataTable table;
     private DateTime currentDate;
@@ -26,7 +25,15 @@ public partial class Track : System.Web.UI.Page
         {
             currentDate = (DateTime)Session["CurrentDate"];
         }
-        lblFoodDate.Text = currentDate.ToShortDateString();
+        if(currentDate.CompareTo(DateTime.Today) == 0)
+        {
+            lblFoodDate.Text = "Today";
+            btnMoreFoodDate.Enabled = false;
+        }
+        else
+        {
+            lblFoodDate.Text = currentDate.ToShortDateString();
+        }
         
         if(Session["User"] == null)
         {
@@ -53,30 +60,7 @@ public partial class Track : System.Web.UI.Page
         }
         if(MultiView1.ActiveViewIndex == 0)
         {
-            if (Session["Meals"] == null)
-            {
-                //mealManager = new MealManager(dsMeals, ((User)Session["User"]).UserID, manager);
-
-                this.meals = (Dictionary<String, Meal>)mealManager.Search(currentDate.ToString("yyyy-MM-dd"));
-
-                DataTable table = buildMealsTable();
-                gvTodayMeals.DataSource = table;
-                gvTodayMeals.DataBind();
-
-                Session["MealsTable"] = table;
-
-                Session["Meals"] = this.meals;
-                Session["MealManager"] = mealManager;
-
-            }
-            else
-            {
-                meals = (Dictionary<string, Meal>)Session["Meals"];
-
-                DataTable table = buildMealsTable();
-                gvTodayMeals.DataSource = table;
-                gvTodayMeals.DataBind();
-            }
+            bindMeals();
         }
 
         if (MultiView1.ActiveViewIndex == 1)
@@ -86,6 +70,35 @@ public partial class Track : System.Web.UI.Page
 
         #endregion
     }
+
+    private void bindMeals()
+    {
+        if (Session["Meals"] == null)
+        {
+            //mealManager = new MealManager(dsMeals, ((User)Session["User"]).UserID, manager);
+
+            this.meals = (Dictionary<String, Meal>)mealManager.Search(currentDate.ToString("yyyy-MM-dd"));
+
+            DataTable table = buildMealsTable();
+            gvTodayMeals.DataSource = table;
+            gvTodayMeals.DataBind();
+
+            Session["MealsTable"] = table;
+
+            Session["Meals"] = this.meals;
+            Session["MealManager"] = mealManager;
+
+        }
+        else
+        {
+            meals = (Dictionary<string, Meal>)Session["Meals"];
+
+            DataTable table = buildMealsTable();
+            gvTodayMeals.DataSource = table;
+            gvTodayMeals.DataBind();
+        }
+    }
+
     protected void Menu1_MenuItemClick(object sender, MenuEventArgs e)
     {
         MultiView1.ActiveViewIndex = Int32.Parse(e.Item.Value);
@@ -103,9 +116,7 @@ public partial class Track : System.Web.UI.Page
                 if (temp == null || temp.Table.Rows.Count == 0)
                 {
                     gvResults.Visible = false;
-                    lblError.Visible = true;
-                    lblError.Text = "The food you are looking for does not exist.";
-                    lbtnCreate.Visible = true;
+                    pnlFoodError.Visible = true;
                 }
                 else
                 {
@@ -245,16 +256,40 @@ public partial class Track : System.Web.UI.Page
     
     protected void btnLessFoodDate_Click(object sender, EventArgs e)
     {
-        currentDate.AddDays(-1);
+        //Enable moving forward through days
+        btnMoreFoodDate.Enabled = true;
+
+        currentDate = currentDate.AddDays(-1);
         lblFoodDate.Text = currentDate.ToShortDateString();
         Session["CurrentDate"] = currentDate;
+        Session["Meals"] = null;
+        bindMeals();
     }
     
     protected void btnMoreFoodDate_Click(object sender, EventArgs e)
     {
-        currentDate.AddDays(1);
-        lblFoodDate.Text = currentDate.ToShortDateString();
+        if((currentDate.AddDays(1)).CompareTo(DateTime.Today) > 0)
+        {
+            //If adding a day would go past today's date, do nothing
+            return;
+        }
+
+        currentDate = currentDate.AddDays(1);
+        if (currentDate.CompareTo(DateTime.Today) == 0)
+        {
+            lblFoodDate.Text = "Today";
+            btnMoreFoodDate.Enabled = false;
+        }
+        else
+        {
+            lblFoodDate.Text = currentDate.ToShortDateString();
+        }
+
         Session["CurrentDate"] = currentDate;
+
+        //Clear the meals from today, so that bindMeals() can fetch meals for currentDate
+        Session["Meals"] = null;
+        bindMeals();
     }
     
     protected void btnLessExerciseDate_Click(object sender, EventArgs e)
@@ -310,8 +345,7 @@ public partial class Track : System.Web.UI.Page
     protected void lbtnCreate_Click(object sender, EventArgs e)
     {
         pnlCreateFood.Visible = true;
-        lbtnCreate.Visible = false;
-        lblError.Visible = true;
+        pnlFoodError.Visible = false;
     }
     protected void btnCreateFood_Click(object sender, EventArgs e)
     {

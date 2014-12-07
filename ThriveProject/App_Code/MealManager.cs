@@ -165,11 +165,19 @@ public class MealManager : IDataManager
     {
         dsLocal.SelectCommand = "QueryMeals";
         dsLocal.SelectCommandType = SqlDataSourceCommandType.StoredProcedure;
-        dsLocal.SelectParameters.Add("time", name);
-        dsLocal.SelectParameters.Add("userId", id.ToString());
-        Parameter param = new Parameter("return");
-        param.Direction = ParameterDirection.ReturnValue;
-        dsLocal.SelectParameters.Add(param);
+        if (dsLocal.SelectParameters.Count == 0)//These are dynamically added because the wizard created params were incompatible
+        {
+            dsLocal.SelectParameters.Add("time", name);
+            dsLocal.SelectParameters.Add("userId", id.ToString());
+            Parameter param = new Parameter("return");
+            param.Direction = ParameterDirection.ReturnValue;
+            dsLocal.SelectParameters.Add(param);
+        }
+        else
+        {
+            dsLocal.SelectParameters[0].DefaultValue = name;
+            dsLocal.SelectParameters[1].DefaultValue = id.ToString();
+        }
         DataView x =  (DataView)dsLocal.Select(DataSourceSelectArguments.Empty);
 
 
