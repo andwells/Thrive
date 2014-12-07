@@ -18,11 +18,7 @@ public partial class Dashboard : System.Web.UI.Page
         Chart1.ChartAreas[0].AxisY.Minimum = 0;
         Chart1.ChartAreas[0].AxisX.Interval = 1;
         Chart1.ChartAreas[0].AxisY.Interval = 250;
-
-        Chart1.Series[0].XValueType = System.Web.UI.DataVisualization.Charting.ChartValueType.DateTime;
-
-        //Try to get mm/dd instead of mm/dd/yyyy
-        //Chart1.Series[0].XValueType = System.Web.UI.DataVisualization.Charting.ChartValueType.DateTime.
+        
         DateTime startDate = new DateTime(2014, 11, 30);
         DateTime maxDate = DateTime.Now;
         Chart1.ChartAreas[0].AxisX.Minimum = startDate.ToOADate();
@@ -41,37 +37,35 @@ public partial class Dashboard : System.Web.UI.Page
 
     protected void bMonth_Click(object sender, EventArgs e)
     {
-
-        //DateTime begin = today.AddDays( -1 * (today.Day));
-        DateTime begin = today.AddMonths(-1);
-
-        Chart1.Series["Food"].ChartType = System.Web.UI.DataVisualization.Charting.SeriesChartType.FastLine;
-        Chart1.Series["Exercise"].ChartType = System.Web.UI.DataVisualization.Charting.SeriesChartType.Spline;
-
-        Chart1.ChartAreas[0].AxisX.Minimum = begin.ToOADate();
-        Chart1.ChartAreas[0].AxisX.Maximum = today.ToOADate();
+        changeView(0, today.AddMonths(-1), today);
     }
 
     protected void bDay_Click(object sender, EventArgs e)
     {
-        DateTime begin = today;
-
-        Chart1.Series["Food"].ChartType = System.Web.UI.DataVisualization.Charting.SeriesChartType.Column;
-        Chart1.Series["Exercise"].ChartType = System.Web.UI.DataVisualization.Charting.SeriesChartType.Column;
-
-        Chart1.ChartAreas[0].AxisX.Maximum = today.AddDays(1).ToOADate();
-        Chart1.ChartAreas[0].AxisX.Minimum = today.ToOADate();
+        changeView(1, today, today.AddDays(1));
     }
 
 
     protected void bWeek_Click(object sender, EventArgs e)
     {
-        DateTime begin = today.AddDays(-7);
+        changeView(0, today.AddDays(-7), today);
+    }
 
-        Chart1.Series["Food"].ChartType = System.Web.UI.DataVisualization.Charting.SeriesChartType.FastLine;
-        Chart1.Series["Exercise"].ChartType = System.Web.UI.DataVisualization.Charting.SeriesChartType.Spline;
+    protected void changeView(int display, DateTime start, DateTime end)
+    {
+        System.Web.UI.DataVisualization.Charting.SeriesChartType ctype1 = System.Web.UI.DataVisualization.Charting.SeriesChartType.Column;
+        System.Web.UI.DataVisualization.Charting.SeriesChartType ctype2 = System.Web.UI.DataVisualization.Charting.SeriesChartType.Column;
 
-        Chart1.ChartAreas[0].AxisX.Minimum = begin.ToOADate();
-        Chart1.ChartAreas[0].AxisX.Maximum = today.ToOADate();
+        if (display == 0)
+        {
+            ctype1 = System.Web.UI.DataVisualization.Charting.SeriesChartType.FastLine;
+            ctype2 = System.Web.UI.DataVisualization.Charting.SeriesChartType.Spline;
+        }
+
+        Chart1.Series["Food"].ChartType = ctype1;
+        Chart1.Series["Exercise"].ChartType = ctype2;
+        Chart1.ChartAreas[0].AxisX.Minimum = start.ToOADate();
+        Chart1.ChartAreas[0].AxisX.Maximum = end.ToOADate();
+        
     }
 }
