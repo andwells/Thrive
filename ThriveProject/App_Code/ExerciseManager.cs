@@ -120,23 +120,6 @@ public class ExerciseManager : ISearchableDataManager
                 }
                 tempDS.SelectCommand = backQ;
             }
-            //Re-write this section to account for the fact that we may not need to know which DB to search in
-
-            //String[] items = ((String)g).Split(';');
-            //if (items[0].Equals("local"))
-            //{
-            //    tempDS = dsLocal;
-
-            //    tempDS.SelectCommand = "GetFood";
-            //    tempDS.SelectCommandType = SqlDataSourceCommandType.StoredProcedure;
-            //}
-            //else
-            //{
-            //    tempDS = dsAPI;
-            //}
-            //Make back up parameters
-
-
 
             int id = 0;
             double metric = 0.0; // variable to compute calories burned
@@ -167,11 +150,11 @@ public class ExerciseManager : ISearchableDataManager
 /////////////// THIS IS WHERE GULLY STOPPED
             }
             metric = (int)results.Table.Rows[0][3];
-            if (isNotOfficialFood && !results.Table.Rows[0][4].Equals(DBNull.Value))
+            if (isNotOfficialExercise && !results.Table.Rows[0][4].Equals(DBNull.Value))
             {
-                isRestaurant = (bool)results.Table.Rows[0][4];
+                type = (string)results.Table.Rows[0][4];
             }
-            if (isNotOfficialFood && !results.Table.Rows[0][5].Equals(DBNull.Value))
+            if (isNotOfficialExercise && !results.Table.Rows[0][5].Equals(DBNull.Value))
             {
                 categories.AddRange(((String)results.Table.Rows[0][5]).Split(','));
             }
@@ -179,12 +162,11 @@ public class ExerciseManager : ISearchableDataManager
             {
                 categories.Add("");
             }
-            if (isNotOfficialFood)
+            if (isNotOfficialExercise)
             {
 
             }
-
-            return new Exercise(id, metric, name, categories, isRestaurant, servingSize);
+            return new Exercise(id, metric, name, categories, type);
         }
         return null;
     }
@@ -203,9 +185,19 @@ public class ExerciseManager : ISearchableDataManager
             dsLocal.InsertParameters[5].DefaultValue = temp.ServingSize;
             dsLocal.Insert();
             //Add logic to get return value of stored proc
-            return true;
+
+            using (IDbCommand com = ConnectionFactory.GetDBConnection("local"))
+            {
+                com.CommandText = "SELECT MAX(Exercises.exerciseID) FROM Exercises";
+                com.Connection.Open();
+                using (IDataReader i = com.ExecuteReader())
+                {
+                    i.Read();
+                    return i.GetInt32(0);
+                }
+            }
         }
-        return false;
+        return -1;
     }
 
     object IDataManager.Update(object u, string id)
