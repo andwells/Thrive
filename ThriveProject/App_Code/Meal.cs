@@ -5,15 +5,12 @@ using System.Web;
 
 public class Meal
 {
-
     private int totalCalories;
     private String name;
     private DateTime time;
     private List<Food> foods;
     private List<double> servings;
     private int mealID;
-
-    
     private Guid userId;
 
     public int TotalCalories

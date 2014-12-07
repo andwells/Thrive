@@ -3,26 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-
 public class Workout
 {
-    private int id;
     private int totalCalories;
     private String name;
     private DateTime time;
     private List<Exercise> exercises;
-    private List<double> exerciseTimes;
+    private List<double> durations;
+    private int workoutID;
+    private Guid userId;
 
-    public int Id
-    {
-        get { return id; }
-        set { this.id = value; }
-    }
-    
     public int TotalCalories
     {
         get { return totalCalories; }
-        set { totalCalories = value; }
     }
     
     public String Name
@@ -43,32 +36,35 @@ public class Workout
         set { exercises = value; }
     }
 
-    public bool addExercise(Exercise e)
+    public bool addExercise(Exercise e, double duration)
     {
-        if (!exercises.Contains(e))
-        {
-            exercises.Add(e);
-            totalCalories += e.CaloriesBurned;
-            return true;
-        }
-        return false;
+        exercises.Add(e);
+        totalCalories += e.CaloriesBurned;
+        durations.Add(duration);
+        return true;
+    }
+
+    public int WorkoutID
+    {
+        get { return workoutID; }
     }
 
     public bool deleteExercise(Exercise e)
     {
         if (exercises.Contains(e))
         {
+            int i = exercises.IndexOf(e);
             exercises.Remove(e);
             totalCalories -= e.CaloriesBurned;
+            durations.Remove(i);
             return true;
         }
         return false;
     }
 
-    public List<double> ExerciseTimes
+    public List<double> Durations
     {
-        get { return exerciseTimes; }
-        set { exerciseTimes = value; }
+        get { return durations; }
     }
 
 	public Workout(String name, DateTime time)
@@ -77,15 +73,17 @@ public class Workout
         this.name = name;
         this.time = time;
         exercises = new List<Exercise>();
-        exerciseTimes = new List<double>();
+        durations = new List<double>();
 	}
-
-    public Workout(String name, DateTime time, List<Exercise> exercises, List<double> times)
+    
+    public Workout(int anId, Guid uID, int tCal, String name, DateTime time, List<Exercise> exercises, List<double> durations)
     {
-        totalCalories = 0;
+        this.workoutID = anId;
+        this.userId = uID;
+        totalCalories = tCal;
         this.name = name;
         this.time = time;
         this.exercises = exercises;
-        this.exerciseTimes = times;
+        this.durations = durations;
     }
 }

@@ -123,7 +123,7 @@ public class MealManager : IDataManager
                 foods += f.getFoodID() + ",";
             }
 
-            foreach (Double d in servings)
+            foreach (Double d in temp.Servings)
             {
                 servings += d + ",";
             }
