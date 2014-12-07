@@ -103,9 +103,21 @@ public class MealManager : IDataManager
             dsLocal.InsertParameters[2].DefaultValue = "" + foods;
             dsLocal.InsertParameters[3].DefaultValue = "" + servings;
             dsLocal.Insert();
-            return true;
+
+
+            using (IDbCommand com = ConnectionFactory.GetDBConnection("local"))
+            {
+                com.CommandText = "SELECT MAX(Meals.MealId) FROM Meal";
+                com.Connection.Open();
+                using (IDataReader i = com.ExecuteReader())
+                {
+                    i.Read();
+                    return i.GetInt32(0);
+                }
+
+            }
         }
-        return false;
+        return -1;
     }
 
     object IDataManager.Update(object u, string id)

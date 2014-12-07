@@ -105,6 +105,19 @@ public partial class Track : System.Web.UI.Page
     }
     protected void btnSearchFood_Click(object sender, EventArgs e)
     {
+        pnlCreateFood.Visible = false;
+        pnlAddFood.Visible = false;
+
+        //Clears values of controls
+        tbFoodName.Text = "";
+        tbCalories.Text = "";
+        tbCategories.Text = "";
+        cbIsRestaurant.Checked = false;
+        tbServingSize.Text = "";
+        tbServingsEaten.Text = "";
+        tbMealEatenIn.Text = "";
+
+
         String type = ddlSearchType.SelectedValue;
         String query = tbFood.Text;
         switch (type)
@@ -216,7 +229,8 @@ public partial class Track : System.Web.UI.Page
         {
             temp = new Meal(mealName, currentDate);
             temp.addFood((Food)Session["SelectedFood"], servings);
-            mealManager.Add(temp);
+            int newID = (int) mealManager.Add(temp);
+            temp = new Meal(newID, ((User)Session["User"]).UserID, temp.TotalCalories, temp.Name, temp.Time, temp.Foods, temp.Servings);
             meals.Add(temp.Name, temp);
         }
         Session["CurrentMeal"] = temp;
@@ -228,7 +242,6 @@ public partial class Track : System.Web.UI.Page
         gvTodayMeals.DataBind();
         pnlAddFood.Visible = false;
     }
-
     private DataTable buildMealsTable()
     {
         DataTable table = new DataTable();
@@ -253,7 +266,6 @@ public partial class Track : System.Web.UI.Page
         table.AcceptChanges();
         return table;
     }
-    
     protected void btnLessFoodDate_Click(object sender, EventArgs e)
     {
         //Enable moving forward through days
@@ -265,7 +277,6 @@ public partial class Track : System.Web.UI.Page
         Session["Meals"] = null;
         bindMeals();
     }
-    
     protected void btnMoreFoodDate_Click(object sender, EventArgs e)
     {
         if((currentDate.AddDays(1)).CompareTo(DateTime.Today) > 0)
@@ -291,21 +302,18 @@ public partial class Track : System.Web.UI.Page
         Session["Meals"] = null;
         bindMeals();
     }
-    
     protected void btnLessExerciseDate_Click(object sender, EventArgs e)
     {
         currentDate.AddDays(-1);
         lblFoodDate.Text = currentDate.ToShortDateString();
         Session["CurrentDate"] = currentDate;
     }
-    
     protected void btnMoreExerciseDate_Click(object sender, EventArgs e)
     {
         currentDate.AddDays(1);
         lblFoodDate.Text = currentDate.ToShortDateString();
         Session["CurrentDate"] = currentDate;
     }
-    
     protected void btnSearchExercise_Click(object sender, EventArgs e)
     {
         String type = ddlSearchType.SelectedValue;
@@ -359,10 +367,11 @@ public partial class Track : System.Web.UI.Page
         String servSize = tbServingSize.Text;
 
         x = new Food(0, calories, name, catorgies, isRestaurant, servSize);
-        
+        int newID = (int)manager.Add(x);
+        x = new Food(newID, x.CalorieIntake, x.Name, x.Category, x.RestaurantFlag, x.ServingSize);
 
         double servings = Double.Parse(tbServingsEaten.Text);
-        String mealName = tbEnterMealName.Text;
+        String mealName = tbMealEatenIn.Text;
         Meal temp;
 
 
@@ -370,14 +379,14 @@ public partial class Track : System.Web.UI.Page
         if (meals.ContainsKey(mealName))
         {
             temp = meals[mealName];
-            temp.addFood((Food)Session["SelectedFood"], servings);
+            temp.addFood(x, servings);
             mealManager.Update(temp, "id");
             meals[temp.Name] = temp;
         }
         else
         {
             temp = new Meal(mealName, currentDate);
-            temp.addFood((Food)Session["SelectedFood"], servings);
+            temp.addFood(x, servings);
             mealManager.Add(temp);
             meals.Add(temp.Name, temp);
         }
@@ -388,5 +397,9 @@ public partial class Track : System.Web.UI.Page
         Session["MealsTable"] = table;
         gvTodayMeals.DataSource = table;
         gvTodayMeals.DataBind();
+    }
+    protected void sqlDSLocal_Inserted(object sender, SqlDataSourceStatusEventArgs e)
+    {
+        //Blank; does nothing
     }
 }

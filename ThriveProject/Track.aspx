@@ -14,16 +14,17 @@
             <asp:ControlParameter ControlID="tbFood" PropertyName="Text" Name="Shrt_Desc" Type="String"></asp:ControlParameter>
         </SelectParameters>
     </asp:SqlDataSource>
-    <asp:SqlDataSource ID="sqlDSLocal" runat="server" ConnectionString='<%$ ConnectionStrings:DefaultConnection %>' DeleteCommand="DeleteFood" InsertCommand="UpdateFood" SelectCommand="QueryFoods" UpdateCommand="UpdateFood" SelectCommandType="StoredProcedure" DeleteCommandType="StoredProcedure" InsertCommandType="StoredProcedure" UpdateCommandType="StoredProcedure" DataSourceMode="DataSet">
+    <asp:SqlDataSource ID="sqlDSLocal" runat="server" ConnectionString='<%$ ConnectionStrings:DefaultConnection %>' DeleteCommand="DeleteFood" InsertCommand="CreateFood" SelectCommand="QueryFoods" UpdateCommand="UpdateFood" SelectCommandType="StoredProcedure" DeleteCommandType="StoredProcedure" InsertCommandType="StoredProcedure" UpdateCommandType="StoredProcedure" DataSourceMode="DataSet" OnInserted="sqlDSLocal_Inserted">
         <DeleteParameters>
             <asp:Parameter Name="FoodId" Type="Int32"></asp:Parameter>
         </DeleteParameters>
         <InsertParameters>
-            <asp:Parameter Name="UserId" Type="Object"></asp:Parameter>
             <asp:Parameter Name="Name" Type="String"></asp:Parameter>
             <asp:Parameter Name="Calories" Type="Int32"></asp:Parameter>
             <asp:Parameter Name="IsRestaurant" Type="Boolean"></asp:Parameter>
             <asp:Parameter Name="Categories" Type="String"></asp:Parameter>
+            <asp:Parameter Name="ServingSize" Type="String"></asp:Parameter>
+            <asp:Parameter Name="Return" Type="Int32" Direction="ReturnValue"></asp:Parameter>
         </InsertParameters>
         <SelectParameters>
             <asp:Parameter Name="Name" Type="String"></asp:Parameter>
@@ -105,6 +106,8 @@
                         <asp:TextBox ID="tbServingSize" runat="server"></asp:TextBox>
                         <asp:Label ID="lblServingsEaten" runat="server" Text="Servings Eaten: "></asp:Label>
                         <asp:TextBox ID="tbServingsEaten" runat="server"></asp:TextBox>
+                        <asp:Label ID="lblMealToCreateIn" runat="server" Text="Meal Eaten In: "></asp:Label>
+                        <asp:TextBox ID="tbMealEatenIn" runat="server"></asp:TextBox>
                         <asp:Button ID="btnCreateFood" runat="server" Text="Create" OnClick="btnCreateFood_Click"/>
                     </asp:Panel>
                 </section>

@@ -21,7 +21,7 @@ public partial class Account_Login : Page
             manager = (IDataManager)Session["manager"];
         }
         RegisterHyperLink.NavigateUrl = "Register";
-        OpenAuthLogin.ReturnUrl = Request.QueryString["ReturnUrl"];
+        //OpenAuthLogin.ReturnUrl = Request.QueryString["ReturnUrl"];
 
         var returnUrl = HttpUtility.UrlEncode(Request.QueryString["ReturnUrl"]);
         if (!String.IsNullOrEmpty(returnUrl))

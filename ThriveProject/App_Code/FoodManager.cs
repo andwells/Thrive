@@ -180,20 +180,50 @@ public class FoodManager : ISearchableDataManager
         //Add logic to ensure stored procedure is correct
         if(a.GetType().Name.Equals("Food"))
         {
+            String strCat = "";
+
+            
             Food temp = (Food)a;
-            dsLocal.InsertParameters[0].DefaultValue = id.ToString();
-            dsLocal.InsertParameters[1].DefaultValue = temp.Name;
-            dsLocal.InsertParameters[2].DefaultValue = temp.CalorieIntake.ToString();
-            dsLocal.InsertParameters[3].DefaultValue = temp.RestaurantFlag.ToString();
-            dsLocal.InsertParameters[4].DefaultValue = temp.Category.ToString();
-            dsLocal.InsertParameters[5].DefaultValue = temp.ServingSize;
+
+            foreach(String cat in temp.Category)
+            {
+                strCat += cat + ",";
+            }
+
+            dsLocal.InsertCommand = "CreateFood";
+            dsLocal.InsertCommandType = SqlDataSourceCommandType.StoredProcedure;
+            dsLocal.InsertParameters[0].DefaultValue = temp.Name;
+            dsLocal.InsertParameters[1].DefaultValue = temp.CalorieIntake.ToString();
+            dsLocal.InsertParameters[2].DefaultValue = temp.RestaurantFlag.ToString();
+            dsLocal.InsertParameters[3].DefaultValue = strCat;
+            dsLocal.InsertParameters[4].DefaultValue = temp.ServingSize;
+            if (dsLocal.InsertParameters.Count == 6)
+            {
+                dsLocal.InsertParameters.Add("userID", id.ToString());
+            }
+            else
+            {
+                dsLocal.InsertParameters[6].DefaultValue = id.ToString();
+            }
             dsLocal.Insert();
             //Add logic to get return value of stored proc
-            return true;
+            using (IDbCommand com = ConnectionFactory.GetDBConnection("local"))
+            {
+                com.CommandText = "SELECT MAX(Foods.FoodID) FROM FOODS";
+                com.Connection.Open();
+                using(IDataReader i = com.ExecuteReader())
+                {
+                    i.Read();
+                    return i.GetInt32(0);
+                }
+                
+            }
+
         }
-        return false;
+        return -1;
     }
 
+    //NOTE: Will not be used; Once custom foods have been created, they cannot be changed
     object IDataManager.Update(object u, string id)
     {
         //Food x;

@@ -6,7 +6,7 @@
         <h1><%: Title %>.</h1>
     </hgroup>
     
-    <section id="loginForm">
+    <section id="loginForm" style="width:100%">
         <h2>Use a local account to log in.</h2>
         <asp:Login runat="server" ViewStateMode="Disabled" ID="loginDude" RenderOuterTable="false" OnLoggedIn="loginDude_LoggedIn">
             <LayoutTemplate>
@@ -41,8 +41,5 @@
         </p>
     </section>
 
-    <section id="socialLoginForm">
-        <h2>Use another service to log in.</h2>
-        <uc:OpenAuthProviders runat="server" ID="OpenAuthLogin" />
-    </section>
+    
 </asp:Content>
