@@ -315,35 +315,44 @@ public partial class Track : System.Web.UI.Page
     }
     protected void btnCreateFood_Click(object sender, EventArgs e)
     {
-        //Food x;
+        Food x;
+        String name = tbFoodName.Text;
+        int calories = Int32.Parse(tbCalories.Text);
+        List<String> catorgies = new List<String>();
+        char[] delim = {','};
+        catorgies.AddRange(tbCategories.Text.Split(delim, StringSplitOptions.RemoveEmptyEntries));
+        bool isRestaurant = cbIsRestaurant.Checked;
+        String servSize = tbServingSize.Text;
+
+        x = new Food(0, calories, name, catorgies, isRestaurant, servSize);
         
 
-        //double servings = Double.Parse(tbServings.Text);
-        //String mealName = tbEnterMealName.Text;
-        //Meal temp;
+        double servings = Double.Parse(tbServingsEaten.Text);
+        String mealName = tbEnterMealName.Text;
+        Meal temp;
 
 
-        ////add check to make sure meal for certain day with that name doesn't already exist
-        //if (meals.ContainsKey(mealName))
-        //{
-        //    temp = meals[mealName];
-        //    temp.addFood((Food)Session["SelectedFood"], servings);
-        //    mealManager.Update(temp, "id");
-        //    meals[temp.Name] = temp;
-        //}
-        //else
-        //{
-        //    temp = new Meal(mealName, currentDate);
-        //    temp.addFood((Food)Session["SelectedFood"], servings);
-        //    mealManager.Add(temp);
-        //    meals.Add(temp.Name, temp);
-        //}
-        //Session["CurrentMeal"] = temp;
+        //add check to make sure meal for certain day with that name doesn't already exist
+        if (meals.ContainsKey(mealName))
+        {
+            temp = meals[mealName];
+            temp.addFood((Food)Session["SelectedFood"], servings);
+            mealManager.Update(temp, "id");
+            meals[temp.Name] = temp;
+        }
+        else
+        {
+            temp = new Meal(mealName, currentDate);
+            temp.addFood((Food)Session["SelectedFood"], servings);
+            mealManager.Add(temp);
+            meals.Add(temp.Name, temp);
+        }
+        Session["CurrentMeal"] = temp;
 
-        ////Add logic to add meals to gridview
-        //DataTable table = buildMealsTable();
-        //Session["MealsTable"] = table;
-        //gvTodayMeals.DataSource = table;
-        //gvTodayMeals.DataBind();
+        //Add logic to add meals to gridview
+        DataTable table = buildMealsTable();
+        Session["MealsTable"] = table;
+        gvTodayMeals.DataSource = table;
+        gvTodayMeals.DataBind();
     }
 }

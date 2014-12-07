@@ -30,13 +30,14 @@ public class FoodManager : ISearchableDataManager
         DataView x;
         if (type.Equals("restaurant"))
         {
+            //Add line to check for correct params
             x = (DataView) dsAPI.Select(DataSourceSelectArguments.Empty);
             
         }
         else
         {
+            //Add line to check for correct params
             dsLocal.SelectCommand = "QueryFoodsByType";
-
             x = (DataView)dsLocal.Select(DataSourceSelectArguments.Empty);
         }
         
@@ -60,7 +61,6 @@ public class FoodManager : ISearchableDataManager
     /// <param name="g"></param>
     /// <returns></returns>
     /// 
-    //WARNING!! This method is broken! Needs to be re-written to adjust for checking the range of the ID!
     object IDataManager.Get(object g)
     {
         if(g.GetType().Name.Equals("String"))
@@ -68,8 +68,9 @@ public class FoodManager : ISearchableDataManager
             DataView results;
             SqlDataSource tempDS;
             String foodID = (string)g;
-            bool isOfficialFood = (foodID.CompareTo("100000") >= 0);
-            if (isOfficialFood)
+            int fIDD = Int32.Parse(foodID);
+            bool isNotOfficialFood = (fIDD >= 100000);
+            if (isNotOfficialFood)
             {
                 tempDS = dsLocal;
                 tempDS.SelectCommand = "GetFood";
@@ -96,9 +97,27 @@ public class FoodManager : ISearchableDataManager
             else
             {
                 tempDS = dsAPI;
-                tempDS.SelectParameters[0].DefaultValue = foodID;
+                String backQ = tempDS.SelectCommand;
+                tempDS.SelectCommand = "SELECT ABBREV.NDB_No AS FoodId, ABBREV.Shrt_Desc AS Name, ABBREV.GmWt_Desc1 AS ServingSize, ABBREV.Energ_Kcal AS Calories FROM ABBREV WHERE (((ABBREV.NDB_No)=[?])) ORDER BY ABBREV.Shrt_Desc;";
+
+                ParameterCollection tempCol = new ParameterCollection();
+                foreach (Parameter p in tempDS.SelectParameters)
+                {
+                    tempCol.Add(p);
+                }
+
+                tempDS.SelectParameters.Clear();
+                tempDS.SelectParameters.Add("FoodID", foodID);
+
                 results = (DataView)tempDS.Select(DataSourceSelectArguments.Empty);
 
+                tempDS.SelectParameters.RemoveAt(0);
+
+                foreach (Parameter p in tempCol)
+                {
+                    tempDS.SelectParameters.Add(p);
+                }
+                tempDS.SelectCommand = backQ;
             }
             //Re-write this section to account for the fact that we may not need to know which DB to search in
             
@@ -124,17 +143,32 @@ public class FoodManager : ISearchableDataManager
             List<String> categories = new List<String>();
                        
             id = (int)results.Table.Rows[0][0];
-            name = (String)results.Table.Rows[0][2];
+            if (isNotOfficialFood)
+            {
+                name = (String)results.Table.Rows[0][2];
+                servingSize = (String)results.Table.Rows[0][6];
+            }
+            else
+            {
+                name = (String)results.Table.Rows[0][1];
+            }
             calories = (int)results.Table.Rows[0][3];
-            if (!results.Table.Rows[0][4].Equals(DBNull.Value))
+            if (isNotOfficialFood && !results.Table.Rows[0][4].Equals(DBNull.Value))
             {
                 isRestaurant = (bool)results.Table.Rows[0][4];
             }
-            if (!results.Table.Rows[0][5].Equals(DBNull.Value))
+            if (isNotOfficialFood && !results.Table.Rows[0][5].Equals(DBNull.Value))
             {
                 categories.AddRange(((String)results.Table.Rows[0][5]).Split(','));
             }
-            servingSize = (String)results.Table.Rows[0][6];
+            else
+            {
+                categories.Add("");
+            }
+            if(isNotOfficialFood)
+            {
+                
+            }
             
             return new Food(id, calories, name, categories, isRestaurant, servingSize);
         }
@@ -154,7 +188,7 @@ public class FoodManager : ISearchableDataManager
             dsLocal.InsertParameters[4].DefaultValue = temp.Category.ToString();
             dsLocal.InsertParameters[5].DefaultValue = temp.ServingSize;
             dsLocal.Insert();
-
+            //Add logic to get return value of stored proc
             return true;
         }
         return false;
