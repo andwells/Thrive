@@ -11,11 +11,14 @@
 <!--
 <add name="ChartImageHandler" preCondition="integratedMode" verb="GET,HEAD,POST" path="ChartImg.axd" type="System.Web.UI.DataVisualization.Charting.ChartHttpHandler, System.Web.DataVisualization, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
 -->
-
-<asp:Chart ID="Chart1" runat="server" Width="650px" >
+<!--
+            added xvaluetype, to test shortdate(); under asp:Series 3 lines down
+-->
+<asp:Chart ID="Chart1" runat="server" Width="600px" >
     <Series>
-        <asp:Series Name="Food" Color="DarkRed" BorderWidth="3" ChartType="Line" LegendText="Foodz" MarkerBorderColor="White" Legend="Legend1"></asp:Series>
-        <asp:Series Name="Exercise" ChartArea="ChartArea1" Color="LawnGreen" BorderWidth="4" ChartType="Spline" Legend="Legend1"></asp:Series>
+        
+        <asp:Series Name="Food" Color="DarkRed" BorderWidth="3" ChartType="Line" LegendText="Foodz" MarkerBorderColor="White" Legend="Legend1" XValueType="DateTime"></asp:Series>
+        <asp:Series Name="Exercise" ChartArea="ChartArea1" Color="LawnGreen" BorderWidth="4" ChartType="Spline" Legend="Legend1" XValueType="DateTime"></asp:Series>
     </Series>
     <ChartAreas>
         <asp:ChartArea Name="ChartArea1">
@@ -30,6 +33,9 @@
     <asp:Button ID="bDay" runat="server" OnClick="bDay_Click" Text="View Day" />
     <asp:Button ID="bWeek" runat="server" OnClick="bWeek_Click" Text="View Week" />
     <asp:Button ID="bMonth" runat="server" Text="View Month" onClick="bMonth_Click"/>
+
+<br />
+<br />
 
 </asp:Content>
 
