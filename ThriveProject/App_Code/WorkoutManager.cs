@@ -53,19 +53,22 @@ public class WorkoutManager : IDataManager
         if (results != null)
         {
             int workoutID = Int32.Parse((string)results[0][0]);
+            int totalCalories = (int)results[0][1]; 
             String gName = (string)results[0][2];
+            DateTime time = (DateTime)results[0][3];
             List<Exercise> exercises = new List<Exercise>();
-            String[] exerciseIDs = ((string)results[0][3]).Split(',');
-
+            String[] exerciseIDs = ((string)results[0][4]).Split(',');
+            String[] durStrings = ((string)results[0][5]).Split(',');
             foreach (String eID in exerciseIDs)
             {
                 exercises.Add((Exercise)exercisesManager.Get(eID));
             }
-            List<double> durations = new List<double>();
-            int totalCalories = Int32.Parse((String)results[0][4]);
-            DateTime time = DateTime.Parse((String)results[0][5]);
+            List<int> durations = new List<int>();
 
-
+            foreach (String dur in durStrings)
+            {
+                durations.Add(Int32.Parse(dur));
+            }
             return new Workout(workoutID, this.id, totalCalories, gName, time, exercises, durations);
         }
         else
@@ -95,9 +98,10 @@ public class WorkoutManager : IDataManager
             dsLocal.InsertCommand = "CreateWorkout";
             dsLocal.InsertCommandType = SqlDataSourceCommandType.StoredProcedure;
             dsLocal.InsertParameters.Add("userID", id.ToString());
+            dsLocal.InsertParameters.Add("time", DbType.String, temp.Time.ToString("yyyy-MM-dd"));
             //dsLocal.InsertParameters[0].DefaultValue = id.ToString();
             dsLocal.InsertParameters[0].DefaultValue = temp.Name;
-            dsLocal.InsertParameters.Add("time", DbType.String, temp.Time.ToString("yyyy-MM-dd"));
+            
             //dsLocal.InsertParameters[2].DefaultValue = temp.Time.ToString("yyyy-MM-dd");
             dsLocal.InsertParameters[1].DefaultValue = "" + temp.TotalCalories;
             dsLocal.InsertParameters[2].DefaultValue = "" + exercises;
@@ -188,11 +192,11 @@ public class WorkoutManager : IDataManager
             List<Exercise> exercises = new List<Exercise>();
             string[] exerciseIDs = ((String)x.Table.Rows[i][5]).Split(delim, StringSplitOptions.RemoveEmptyEntries);
             string[] strDurations = ((String)x.Table.Rows[i][6]).Split(delim, StringSplitOptions.RemoveEmptyEntries);
-            List<double> durations = new List<double>();
+            List<int> durations = new List<int>();
 
             foreach (String strDur in strDurations)
             {
-                durations.Add(Double.Parse(strDur));
+                durations.Add(Int32.Parse(strDur));
             }
 
             foreach (String eID in exerciseIDs)

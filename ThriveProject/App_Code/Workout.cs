@@ -9,7 +9,7 @@ public class Workout
     private String name;
     private DateTime time;
     private List<Exercise> exercises;
-    private List<double> durations;
+    private List<int> durations;
     private int workoutID;
     private Guid userId;
 
@@ -36,7 +36,7 @@ public class Workout
         set { exercises = value; }
     }
 
-    public bool addExercise(Exercise e, double duration)
+    public bool addExercise(Exercise e, int duration)
     {
         exercises.Add(e);
         totalCalories += e.CaloriesBurned;
@@ -62,7 +62,7 @@ public class Workout
         return false;
     }
 
-    public List<double> Durations
+    public List<int> Durations
     {
         get { return durations; }
     }
@@ -73,10 +73,10 @@ public class Workout
         this.name = name;
         this.time = time;
         exercises = new List<Exercise>();
-        durations = new List<double>();
+        durations = new List<int>();
 	}
     
-    public Workout(int anId, Guid uID, int tCal, String name, DateTime time, List<Exercise> exercises, List<double> durations)
+    public Workout(int anId, Guid uID, int tCal, String name, DateTime time, List<Exercise> exercises, List<int> durations)
     {
         this.workoutID = anId;
         this.userId = uID;

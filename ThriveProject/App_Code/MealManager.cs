@@ -94,14 +94,23 @@ public class MealManager : IDataManager
 
             dsLocal.InsertCommand = "CreateMeal";
             dsLocal.InsertCommandType = SqlDataSourceCommandType.StoredProcedure;
-            dsLocal.InsertParameters.Add("userID", id.ToString());
-            //dsLocal.InsertParameters[0].DefaultValue = id.ToString();
+
+            
             dsLocal.InsertParameters[0].DefaultValue = temp.Name;
-            dsLocal.InsertParameters.Add("time", DbType.String, temp.Time.ToString("yyyy-MM-dd"));
-            //dsLocal.InsertParameters[2].DefaultValue = temp.Time.ToString("yyyy-MM-dd");
             dsLocal.InsertParameters[1].DefaultValue = "" + temp.TotalCalories;
             dsLocal.InsertParameters[2].DefaultValue = "" + foods;
             dsLocal.InsertParameters[3].DefaultValue = "" + servings;
+
+            if (dsLocal.InsertParameters.Count == 4)
+            {
+                dsLocal.InsertParameters.Add("userID", id.ToString());
+                dsLocal.InsertParameters.Add("time", DbType.String, temp.Time.ToString("yyyy-MM-dd"));
+            }
+            else
+            {
+                dsLocal.InsertParameters[5].DefaultValue = id.ToString();
+                dsLocal.InsertParameters[6].DefaultValue = temp.Time.ToString("yyyy-MM-dd");
+            }
             dsLocal.Insert();
 
 

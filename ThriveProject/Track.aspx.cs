@@ -12,6 +12,7 @@ public partial class Track : System.Web.UI.Page
     private IDataManager mealManager;
     private IDataManager workoutManager;
     private Dictionary<String, Meal> meals;
+    private Dictionary<String, Workout> workouts;
     private DataTable table;
     private DateTime currentDate;
     protected void Page_Load(object sender, EventArgs e)
@@ -116,6 +117,28 @@ public partial class Track : System.Web.UI.Page
             DataTable table = buildMealsTable();
             gvTodayMeals.DataSource = table;
             gvTodayMeals.DataBind();
+        }
+    }
+
+    private void bindWorkouts()
+    {
+        if (Session["Workouts"] == null)
+        {
+            this.workouts = (Dictionary<string, Workout>)workoutManager.Search(currentDate.ToString("yyyy-MM-dd"));
+            DataTable table = buildMealsTable();
+            gvTodayWorkouts.DataSource = table;
+            gvTodayWorkouts.DataBind();
+
+            Session["WorkoutsTable"] = table;
+            Session["Workouts"] = this.workouts;
+            Session["WorkoutManager"] = workoutManager;
+        }
+        else
+        {
+            workouts = (Dictionary<string, Workout>)Session["Workouts"];
+            DataTable table = buildWorkoutsTable();
+            gvTodayWorkouts.DataSource = table;
+            gvTodayWorkouts.DataBind();
         }
     }
 
@@ -279,7 +302,7 @@ public partial class Track : System.Web.UI.Page
         table.Columns.Add("Food Name");
         table.Columns.Add("Servings");
         table.Columns.Add("Total Calories");
-        table.Columns.Add("MealName");
+        table.Columns.Add("Meal Name");
         
         foreach(Meal m in meals.Values)
         {
@@ -293,6 +316,31 @@ public partial class Track : System.Web.UI.Page
                 rowVals[3] = m.Name;
                 table.Rows.Add(rowVals);
             }       
+        }
+        table.AcceptChanges();
+        return table;
+    }
+    private DataTable buildWorkoutsTable()
+    {
+        DataTable table = new DataTable();
+        table.Columns.Add("Exercise Name");
+        table.Columns.Add("Hours Exercised");
+        table.Columns.Add("Minutes Exercised");
+        table.Columns.Add("Calories Burned");
+        table.Columns.Add("Workout Name");
+
+        foreach (Workout w in workouts.Values)
+        {
+            object[] rowVals;
+            for (int i = 0; i < w.Exercises.Count; i++)
+            {
+                rowVals = new object[5];
+                rowVals[0] = w.Exercises[i].Name;
+                int time = (int)w.Durations[i];
+
+                
+                table.Rows.Add(rowVals);
+            }
         }
         table.AcceptChanges();
         return table;

@@ -213,7 +213,7 @@
                             <asp:TextBox ID="tbWorkoutoutName" runat="server"></asp:TextBox>
                             <asp:Button ID="btnAddExercise" runat="server" Text="Add Food"/>
                         </asp:Panel>
-                        <asp:GridView ID="gvWorkouts" runat="server"></asp:GridView>
+                        <asp:GridView ID="gvTodayWorkouts" runat="server"></asp:GridView>
                     </ContentTemplate>
                 </asp:UpdatePanel>
             </asp:View>
