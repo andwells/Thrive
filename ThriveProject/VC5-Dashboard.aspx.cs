@@ -5,6 +5,13 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
+
+//TO DO:
+//
+//  Update range changes to stay on same day/year/month if valid to stay there.
+//
+//
+
 public partial class vc2Dashboard : System.Web.UI.Page
 {
     DateTime today = DateTime.Now;
@@ -15,14 +22,63 @@ public partial class vc2Dashboard : System.Web.UI.Page
     int[] shortMonth   = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
     int[] febLongMonth = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 };
     int[] febMonth     = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28 };
-    
+
+    //months with 31 days: 0-based--- 0, 2, 4, 6, 7, 9, 11      1-based--- 1, 3, 5, 7, 8, 10, 12
+    //months with 30 days: 0-based--- 3, 5, 8, 10,              1-based--- 4, 6, 9, 11
+    //feb with 28 days                 index == 1                              1-based--- 2
+
     protected void updateDayList()
     {
-        //if on 30 day month and day 31, skip. if on feb and after 28 skip. blah blah....
-        Session["previous"] = new DateTime(ddlYear.SelectedIndex + 2012, ddlMonth.SelectedIndex + 1, ddlDay.SelectedIndex + 1);
+        
+        //the only time we change previous is if we are now at a valid date.
+        //we are at a valid date, IFF:
+        //  feb selected ? 
+        //      leapyear ? day must be less than or = 29 : day must be less than or = 28
+        //  feb not selected ? 
+        //      is short month selected? true iff:
+        //          index == 3 || 5 || 8 || 10
+        //          day must be less than or = 30
+        //      not short month:
+        //          must be at valid date.
+        //
+
+        bool changePrevious = true;
         if (ddlMonth.SelectedIndex == 1)
         {
+            int leapyear = 0;
             if (ddlYear.SelectedIndex % 4 == 0)
+            {
+                leapyear = 1;
+            }
+
+            if (ddlDay.SelectedIndex > (27 + leapyear))
+            {
+                changePrevious = false;
+            }
+        }
+
+        if(changePrevious == true)
+        {
+            if(ddlMonth.SelectedIndex == 3 ||
+               ddlMonth.SelectedIndex == 5 ||
+               ddlMonth.SelectedIndex == 8 ||
+               ddlMonth.SelectedIndex == 10 )
+            {
+                if(ddlDay.SelectedIndex >= 30)
+                {
+                    changePrevious = false;
+                }
+            }
+        }
+        
+        if(changePrevious == true)
+        {
+            Session["previous"] = new DateTime(ddlYear.SelectedIndex + 2012, ddlMonth.SelectedIndex + 1, ddlDay.SelectedIndex + 1);
+        }
+        
+        if (ddlMonth.SelectedIndex == 1)
+        {
+            if ((ddlYear.SelectedIndex + 2012) % 4 == 0)
             {
                 ddlDay.DataSource = febLongMonth;
             }
@@ -51,11 +107,46 @@ public partial class vc2Dashboard : System.Web.UI.Page
 
     protected void updateEndDayList()
     {
-        Session["previousEnd"] = new DateTime(ddlEndYear.SelectedIndex + 2012, ddlEndMonth.SelectedIndex + 1, ddlEndDay.SelectedIndex + 1);
+        //see logic in above updateDayList() for if we update previous
+
+        bool changePrevious = true;
+        if (ddlEndMonth.SelectedIndex == 1)
+        {
+            int leapyear = 0;
+            if (ddlEndYear.SelectedIndex % 4 == 0)
+            {
+                leapyear = 1;
+            }
+
+            if (ddlEndDay.SelectedIndex > (27 + leapyear))
+            {
+                changePrevious = false;
+            }
+        }
+
+        if (changePrevious == true)
+        {
+            if (ddlEndMonth.SelectedIndex == 3 ||
+               ddlEndMonth.SelectedIndex == 5 ||
+               ddlEndMonth.SelectedIndex == 8 ||
+               ddlEndMonth.SelectedIndex == 10)
+            {
+                if (ddlEndDay.SelectedIndex >= 30)
+                {
+                    changePrevious = false;
+                }
+            }
+        }
+
+        if (changePrevious == true)
+        {
+            Session["previousEnd"] = new DateTime(ddlEndYear.SelectedIndex + 2012, ddlEndMonth.SelectedIndex + 1, ddlEndDay.SelectedIndex + 1);
+        }
+
 
         if (ddlEndMonth.SelectedIndex == 1)
         {
-            if (ddlEndYear.SelectedIndex % 4 == 0)
+            if ((ddlEndYear.SelectedIndex + 2012) % 4 == 0)
             {
                 ddlEndDay.DataSource = febLongMonth;
             }
@@ -279,12 +370,6 @@ public partial class vc2Dashboard : System.Web.UI.Page
 
     }
 
-    /*****
-     * 
-     * Check bad date first. --matt
-     * 
-     * 
-     */ 
 
     protected void ddlMonth_SelectedIndexChanged(object sender, EventArgs e)
     {
