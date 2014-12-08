@@ -10,6 +10,7 @@ public partial class Track : System.Web.UI.Page
 {
     private ISearchableDataManager manager;
     private IDataManager mealManager;
+    private IDataManager workoutManager;
     private Dictionary<String, Meal> meals;
     private DataTable table;
     private DateTime currentDate;
@@ -28,11 +29,13 @@ public partial class Track : System.Web.UI.Page
         if(currentDate.CompareTo(DateTime.Today) == 0)
         {
             lblFoodDate.Text = "Today";
+            lblExerciseDate.Text = "Today";
             btnMoreFoodDate.Enabled = false;
         }
         else
         {
             lblFoodDate.Text = currentDate.ToShortDateString();
+            lblExerciseDate.Text = currentDate.ToShortDateString();
         }
         
         if(Session["User"] == null)
@@ -45,7 +48,15 @@ public partial class Track : System.Web.UI.Page
         }
         else
         {
-            manager = new FoodManager(sqlDSLocal, sqlDSAccess, ((User)Session["User"]).UserID);
+            if (MultiView1.ActiveViewIndex == 0)
+            {
+                manager = new FoodManager(sqlDSLocal, sqlDSAccess, ((User)Session["User"]).UserID);
+            }
+            else
+            {
+                //Adjust sqlDSLocal
+                manager = new ExerciseManager(sqlDSLocal, sqlDSExercises, ((User)Session["User"]).UserID);
+            }
             Session["Manager"] = manager;
         }
 
@@ -58,6 +69,17 @@ public partial class Track : System.Web.UI.Page
             mealManager = new MealManager(dsMeals, ((User)Session["User"]).UserID, manager);
             Session["MealManager"] = mealManager;
         }
+
+        if (Session["WorkoutManager"] != null)
+        {
+            workoutManager = (IDataManager)Session["WorkoutManager"];
+        }
+        else
+        {
+            workoutManager = new WorkoutManager(sqlDSLocalExercise, ((User)Session["User"]).UserID, manager);
+            Session["WorkoutManager"] = workoutManager;
+        }
+
         if(MultiView1.ActiveViewIndex == 0)
         {
             bindMeals();
@@ -87,12 +109,10 @@ public partial class Track : System.Web.UI.Page
 
             Session["Meals"] = this.meals;
             Session["MealManager"] = mealManager;
-
         }
         else
         {
             meals = (Dictionary<string, Meal>)Session["Meals"];
-
             DataTable table = buildMealsTable();
             gvTodayMeals.DataSource = table;
             gvTodayMeals.DataBind();
@@ -102,6 +122,17 @@ public partial class Track : System.Web.UI.Page
     protected void Menu1_MenuItemClick(object sender, MenuEventArgs e)
     {
         MultiView1.ActiveViewIndex = Int32.Parse(e.Item.Value);
+        if (MultiView1.ActiveViewIndex == 0)
+        {
+            manager = new FoodManager(sqlDSLocal, sqlDSAccess, ((User)Session["User"]).UserID);
+        }
+        else
+        {
+            //Adjust sqlDSLocal
+            manager = new ExerciseManager(sqlDSLocalExercise, sqlDSExercises, ((User)Session["User"]).UserID);
+        }
+        Session["Manager"] = manager;
+
     }
     protected void btnSearchFood_Click(object sender, EventArgs e)
     {
@@ -304,9 +335,14 @@ public partial class Track : System.Web.UI.Page
     }
     protected void btnLessExerciseDate_Click(object sender, EventArgs e)
     {
-        currentDate.AddDays(-1);
-        lblFoodDate.Text = currentDate.ToShortDateString();
+        //Enable moving forward through days
+        btnMoreExerciseDate.Enabled = true;
+
+        currentDate = currentDate.AddDays(-1);
+        lblExerciseDate.Text = currentDate.ToShortDateString();
         Session["CurrentDate"] = currentDate;
+        Session["Workouts"] = null;
+        //bindMeals();
     }
     protected void btnMoreExerciseDate_Click(object sender, EventArgs e)
     {
@@ -316,7 +352,7 @@ public partial class Track : System.Web.UI.Page
     }
     protected void btnSearchExercise_Click(object sender, EventArgs e)
     {
-        String type = ddlSearchType.SelectedValue;
+        String type = ddlSearchTypeExercise.SelectedValue;
         String query = tbExercise.Text;
         switch (type)
         {
@@ -397,9 +433,5 @@ public partial class Track : System.Web.UI.Page
         Session["MealsTable"] = table;
         gvTodayMeals.DataSource = table;
         gvTodayMeals.DataBind();
-    }
-    protected void sqlDSLocal_Inserted(object sender, SqlDataSourceStatusEventArgs e)
-    {
-        //Blank; does nothing
     }
 }

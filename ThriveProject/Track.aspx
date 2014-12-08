@@ -14,7 +14,7 @@
             <asp:ControlParameter ControlID="tbFood" PropertyName="Text" Name="Shrt_Desc" Type="String"></asp:ControlParameter>
         </SelectParameters>
     </asp:SqlDataSource>
-    <asp:SqlDataSource ID="sqlDSLocal" runat="server" ConnectionString='<%$ ConnectionStrings:DefaultConnection %>' DeleteCommand="DeleteFood" InsertCommand="CreateFood" SelectCommand="QueryFoods" UpdateCommand="UpdateFood" SelectCommandType="StoredProcedure" DeleteCommandType="StoredProcedure" InsertCommandType="StoredProcedure" UpdateCommandType="StoredProcedure" DataSourceMode="DataSet" OnInserted="sqlDSLocal_Inserted">
+    <asp:SqlDataSource ID="sqlDSLocal" runat="server" ConnectionString='<%$ ConnectionStrings:DefaultConnection %>' DeleteCommand="DeleteFood" InsertCommand="CreateFood" SelectCommand="QueryFoods" UpdateCommand="UpdateFood" SelectCommandType="StoredProcedure" DeleteCommandType="StoredProcedure" InsertCommandType="StoredProcedure" UpdateCommandType="StoredProcedure" DataSourceMode="DataSet">
         <DeleteParameters>
             <asp:Parameter Name="FoodId" Type="Int32"></asp:Parameter>
         </DeleteParameters>
@@ -58,14 +58,64 @@
             <asp:Parameter Name="MealId" Type="Int32"></asp:Parameter>
         </UpdateParameters>
     </asp:SqlDataSource>
+    <asp:SqlDataSource ID="sqlDSExercises" runat="server" ConnectionString='<%$ ConnectionStrings:ExercisesConnectionString %>' ProviderName='<%$ ConnectionStrings:ExercisesConnectionString.ProviderName %>' SelectCommand="SELECT * FROM [Exercises] WHERE ([Description] LIKE '%' + ? + '%') ORDER BY [Description]">
+        <SelectParameters>
+            <asp:Parameter Name="Description" Type="String"></asp:Parameter>
+        </SelectParameters>
+    </asp:SqlDataSource>
+    <asp:SqlDataSource ID="sqlDSLocalExercise" runat="server" ConnectionString='<%$ ConnectionStrings:DefaultConnection %>' DeleteCommand="DeleteExercise" DeleteCommandType="StoredProcedure" InsertCommand="CreateExercise" InsertCommandType="StoredProcedure" SelectCommand="QueryExercises" SelectCommandType="StoredProcedure" UpdateCommand="UpdateExercise" UpdateCommandType="StoredProcedure">
+        <DeleteParameters>
+            <asp:Parameter Name="ExerciseId" Type="Int32"></asp:Parameter>
+        </DeleteParameters>
+        <InsertParameters>
+            <asp:Parameter Name="UserId" Type="Object"></asp:Parameter>
+            <asp:Parameter Name="Name" Type="String"></asp:Parameter>
+            <asp:Parameter Name="CaloriesBurned" Type="Int32"></asp:Parameter>
+            <asp:Parameter Name="IsAerobic" Type="Boolean"></asp:Parameter>
+            <asp:Parameter Name="Categories" Type="String"></asp:Parameter>
+        </InsertParameters>
+        <SelectParameters>
+            <asp:Parameter Name="Name" Type="String"></asp:Parameter>
+        </SelectParameters>
+        <UpdateParameters>
+            <asp:Parameter Name="ExerciseId" Type="Int32"></asp:Parameter>
+            <asp:Parameter Name="UserId" Type="Object"></asp:Parameter>
+            <asp:Parameter Name="Name" Type="String"></asp:Parameter>
+            <asp:Parameter Name="CaloriesBurned" Type="Int32"></asp:Parameter>
+            <asp:Parameter Name="IsAerobic" Type="Boolean"></asp:Parameter>
+            <asp:Parameter Name="Categories" Type="String"></asp:Parameter>
+        </UpdateParameters>
+    </asp:SqlDataSource>
+    <asp:SqlDataSource ID="sqlDSWorkouts" runat="server" ConnectionString='<%$ ConnectionStrings:DefaultConnection %>' DeleteCommand="DeleteWorkout" DeleteCommandType="StoredProcedure" InsertCommand="CreateWorkout" InsertCommandType="StoredProcedure" SelectCommand="GetWorkout" SelectCommandType="StoredProcedure" UpdateCommand="UpdateWorkout" UpdateCommandType="StoredProcedure">
+        <DeleteParameters>
+            <asp:Parameter Name="workoutID" Type="Int32"></asp:Parameter>
+        </DeleteParameters>
+        <InsertParameters>
+            <asp:Parameter Name="userID" Type="Object"></asp:Parameter>
+            <asp:Parameter Name="name" Type="String"></asp:Parameter>
+            <asp:Parameter Name="totalCalories" Type="Double"></asp:Parameter>
+            <asp:Parameter Name="time" Type="String"></asp:Parameter>
+            <asp:Parameter Name="exercises" Type="String"></asp:Parameter>
+            <asp:Parameter Name="exerciseTimes" Type="String"></asp:Parameter>
+        </InsertParameters>
+        <SelectParameters>
+            <asp:Parameter Name="workoutID" Type="Int32"></asp:Parameter>
+        </SelectParameters>
+        <UpdateParameters>
+            <asp:Parameter Name="workoutId" Type="Int32"></asp:Parameter>
+            <asp:Parameter Name="userID" Type="Object"></asp:Parameter>
+            <asp:Parameter Name="name" Type="String"></asp:Parameter>
+            <asp:Parameter Name="totalCalories" Type="Double"></asp:Parameter>
+            <asp:Parameter Name="time" Type="String"></asp:Parameter>
+            <asp:Parameter Name="exercises" Type="String"></asp:Parameter>
+            <asp:Parameter Name="exerciseTimes" Type="String"></asp:Parameter>
+        </UpdateParameters>
+    </asp:SqlDataSource>
     <section id="track">
         <asp:Menu ID="trackMenu" Width="500px" runat="server" Orientation="Horizontal" StaticEnableDefaultPopOutImage="False" OnMenuItemClick="Menu1_MenuItemClick">
             <Items>
-                <asp:MenuItem Text="Track Food" Value="0">
-                </asp:MenuItem>
+                <asp:MenuItem Text="Track Food" Value="0"></asp:MenuItem>
                 <asp:MenuItem Text="Track Exercise" Value="1"></asp:MenuItem>
-                <asp:MenuItem Text="Track Water" Value="2"></asp:MenuItem>
-                <asp:MenuItem Text="Track Sleep" Value="3"></asp:MenuItem>
             </Items>
         </asp:Menu>
         <br />
@@ -111,7 +161,7 @@
                         <asp:Button ID="btnCreateFood" runat="server" Text="Create" OnClick="btnCreateFood_Click"/>
                     </asp:Panel>
                 </section>
-                <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                <asp:UpdatePanel ID="upnlFood" runat="server">
                     <ContentTemplate>
                         <asp:GridView ID="gvResults" runat="server" AutoGenerateSelectButton="true" AllowPaging="true" OnPageIndexChanging="gvResults_PageIndexChanging" OnSelectedIndexChanged="gvResults_SelectedIndexChanged" OnRowDataBound="gvResults_RowDataBound"></asp:GridView>
                         <br />
@@ -128,9 +178,6 @@
                         </section>
                         </ContentTemplate>
                 </asp:UpdatePanel>
-                <section id ="TodaysMeals">
-                    
-                </section>
             </asp:View>
             <asp:View ID="Tab2" runat="server">
             <asp:Button id="btnLessExerciseDate" runat="server" Text="<" OnClick="btnLessExerciseDate_Click"/>
@@ -138,21 +185,37 @@
                 <asp:Button id="btnMoreExerciseDate" runat="server" Text=">" OnClick="btnMoreExerciseDate_Click"/>
                 <br />
                 <br />
-                <asp:DropDownList ID="ddlSearchTypeExercise" runat="server">
-                    <asp:ListItem Value="name">By Name</asp:ListItem>
-                    <asp:ListItem Value="type">By Type</asp:ListItem>
-                    <asp:ListItem Value="category">By Category</asp:ListItem>
-                </asp:DropDownList>
-                <asp:TextBox ID="tbExercise" runat="server"></asp:TextBox>
-                <asp:Button ID="btnSearchExercise" runat="server" Text="Button2" />
-            </asp:View>
-            <asp:View ID="Tab3" runat="server">
-                <asp:TextBox ID="waterCount" runat="server"></asp:TextBox>
-                <asp:Button ID="btnWaterSave" runat="server" Text="Button3" />
-            </asp:View>
-            <asp:View ID="Tab4" runat="server">
-                <asp:TextBox ID="tbSleep" runat="server"></asp:TextBox>
-                <asp:Button ID="Button4" runat="server" Text="Button3" />
+                <asp:Panel ID="searchExercise" runat="server" DefaultButton="btnSearchExercise">
+                    <asp:DropDownList ID="ddlSearchTypeExercise" runat="server">
+                        <asp:ListItem Value="name">By Name</asp:ListItem>
+                        <asp:ListItem Value="type">By Type</asp:ListItem>
+                        <asp:ListItem Value="category">By Category</asp:ListItem>
+                    </asp:DropDownList>
+                    <asp:TextBox ID="tbExercise" runat="server"></asp:TextBox>
+                    <asp:Button ID="btnSearchExercise" runat="server" Text="Search" OnClick="btnSearchExercise_Click"/>
+                </asp:Panel>
+                <asp:Panel ID="pnlExerciseError" runat="server" Visible="false">
+                    <asp:Label ID="lblExerciseError" runat="server" Text="The exercise you are looking for does not exist."></asp:Label>
+                    <asp:LinkButton ID="lbtnCreateExercise" runat="server" Text="Create Exercise?"></asp:LinkButton>
+                </asp:Panel>
+                <asp:UpdatePanel ID="upnlExercise" runat="server">
+                    <ContentTemplate>
+                        <asp:GridView ID="gvExerciseResults" runat="server" AutoGenerateSelectButton="true" AllowPaging="true" OnPageIndexChanging="gvResults_PageIndexChanging" OnSelectedIndexChanged="gvResults_SelectedIndexChanged" OnRowDataBound="gvResults_RowDataBound"></asp:GridView>
+                        <br />
+                        <asp:Panel ID="pnlAddExercise" runat="server" Visible="false" DefaultButton="">
+                            <asp:Label ID="lblExerciseDesc" runat="server" Text="" ></asp:Label><br />
+                            <asp:Label ID="lblExerciseTime" runat="server" Text="How long did you exercise?"></asp:Label><br />
+                            <asp:Label ID="lblExerciseHours" runat="server" Text="Hours: "></asp:Label>
+                            <asp:TextBox ID="tbExerciseHours" runat="server"></asp:TextBox>
+                            <asp:Label ID="lblExerciseMinutes" runat="server" Text="Minutes: "></asp:Label>
+                            <asp:TextBox ID="tbExerciseMinutes" runat="server"></asp:TextBox>
+                            <asp:Label ID="lblWorkoutName" runat="server" Text="Workout Name"></asp:Label>
+                            <asp:TextBox ID="tbWorkoutoutName" runat="server"></asp:TextBox>
+                            <asp:Button ID="btnAddExercise" runat="server" Text="Add Food"/>
+                        </asp:Panel>
+                        <asp:GridView ID="gvWorkouts" runat="server"></asp:GridView>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
             </asp:View>
         </asp:MultiView>
     </section>
