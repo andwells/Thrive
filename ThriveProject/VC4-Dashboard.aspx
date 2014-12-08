@@ -8,6 +8,13 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">
 
+    <asp:Panel ID="Dailies" runat="server">
+        <asp:Label ID="Label_Cal_Consumed" runat="server" Text="Calories Consumed"></asp:Label>&nbsp;|
+        <asp:Label ID="Label_Cal_Burned" runat="server" Text="Calories Burned"></asp:Label><hr />
+        <asp:Label ID="Label_Weight" runat="server" Text="Weight"></asp:Label>&nbsp;|
+        <asp:Label ID="Label_Water" runat="server" Text="Water"></asp:Label>&nbsp;|
+        <asp:Label ID="Label_Sleep" runat="server" Text="Sleep"></asp:Label>
+    </asp:Panel>
 <!--
 <add name="ChartImageHandler" preCondition="integratedMode" verb="GET,HEAD,POST" path="ChartImg.axd" type="System.Web.UI.DataVisualization.Charting.ChartHttpHandler, System.Web.DataVisualization, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
 -->
