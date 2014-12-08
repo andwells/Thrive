@@ -125,14 +125,14 @@ public class ExerciseManager : ISearchableDataManager
             double metric = 0.0; // variable to compute calories burned
             List<String> categories = new List<String>();
             String name = ""; // == description
-            double caloriesBurned = 0.0;
+            int caloriesBurned = 0;
             String type = ""; // (an)aerobic
 
             id = (int)results.Table.Rows[0][0];
             if (isNotOfficialExercise)
             {
                 name = (String)results.Table.Rows[0][2];
-                caloriesBurned = (double)results.Table.Rows[0][3];
+                caloriesBurned = (int)results.Table.Rows[0][3];
                 if ((bool)results.Table.Rows[0][4] == true)
                 {
                     type = "Aerobic";
@@ -141,32 +141,21 @@ public class ExerciseManager : ISearchableDataManager
                 {
                     type = "Anaerobic";
                 }
-                categories = (List<String>)results.Table.Rows[0][5];
+                categories.AddRange(((String)results.Table.Rows[0][5]).Split(','));
             }
             else
             {
                 name = (String)results.Table.Rows[0][3];
                 metric = (int)results.Table.Rows[0][1];
-/////////////// THIS IS WHERE GULLY STOPPED
+                // TODO: Pull user weight. For now, substituting average weight of 150 lbs and minutes of 30
+                // (metric * 3.5 * (weight/2.2046) / 200) * minutes burned = total calories burned
+                int weight = 150;
+                int minutes = 30;
+                caloriesBurned = (int)((metric * 3.5 * (weight / 2.2046) / 200) * minutes);
+                categories.AddRange(((String)results.Table.Rows[0][2]).Split(','));
+                type = (String)results.Table.Rows[0][4];
             }
-            metric = (int)results.Table.Rows[0][3];
-            if (isNotOfficialExercise && !results.Table.Rows[0][4].Equals(DBNull.Value))
-            {
-                type = (string)results.Table.Rows[0][4];
-            }
-            if (isNotOfficialExercise && !results.Table.Rows[0][5].Equals(DBNull.Value))
-            {
-                categories.AddRange(((String)results.Table.Rows[0][5]).Split(','));
-            }
-            else
-            {
-                categories.Add("");
-            }
-            if (isNotOfficialExercise)
-            {
-
-            }
-            return new Exercise(id, metric, name, categories, type);
+            return new Exercise(id, caloriesBurned, name, categories, type);
         }
         return null;
     }
@@ -174,15 +163,19 @@ public class ExerciseManager : ISearchableDataManager
     object IDataManager.Add(object a)
     {
         //Add logic to ensure stored procedure is correct
-        if (a.GetType().Name.Equals("Food"))
+        if (a.GetType().Name.Equals("Exercise"))
         {
-            Food temp = (Food)a;
+            Exercise temp = (Exercise)a;
             dsLocal.InsertParameters[0].DefaultValue = id.ToString();
             dsLocal.InsertParameters[1].DefaultValue = temp.Name;
-            dsLocal.InsertParameters[2].DefaultValue = temp.CalorieIntake.ToString();
-            dsLocal.InsertParameters[3].DefaultValue = temp.RestaurantFlag.ToString();
+            dsLocal.InsertParameters[2].DefaultValue = temp.CaloriesBurned.ToString();
+            bool isAerobic = true;
+            if (temp.Type.CompareTo("Anaerobic") == 0)
+            {
+                isAerobic = false;
+            }
+            dsLocal.InsertParameters[3].DefaultValue = isAerobic.ToString();
             dsLocal.InsertParameters[4].DefaultValue = temp.Category.ToString();
-            dsLocal.InsertParameters[5].DefaultValue = temp.ServingSize;
             dsLocal.Insert();
             //Add logic to get return value of stored proc
 
@@ -202,15 +195,20 @@ public class ExerciseManager : ISearchableDataManager
 
     object IDataManager.Update(object u, string id)
     {
-        //Food x;
-        if (u != null && u.GetType().Name.Equals("Food"))
+        //Exercise x;
+        if (u != null && u.GetType().Name.Equals("Exercise"))
         {
-            Food temp = (Food)u;
-            dsLocal.UpdateParameters[0].DefaultValue = "";
-            dsLocal.UpdateParameters[0].DefaultValue = "";
-            dsLocal.UpdateParameters[0].DefaultValue = "";
-            dsLocal.UpdateParameters[0].DefaultValue = "";
-            dsLocal.UpdateParameters[0].DefaultValue = "";
+            Exercise temp = (Exercise)u;
+            dsLocal.UpdateParameters[0].DefaultValue = id.ToString(); ;
+            dsLocal.UpdateParameters[1].DefaultValue = temp.Name;
+            dsLocal.UpdateParameters[2].DefaultValue = temp.CaloriesBurned.ToString();
+            bool isAerobic = true;
+            if (temp.Type.CompareTo("Anaerobic") == 0)
+            {
+                isAerobic = false;
+            }
+            dsLocal.UpdateParameters[3].DefaultValue = isAerobic.ToString();
+            dsLocal.UpdateParameters[4].DefaultValue = temp.Category.ToString();
             dsLocal.Update();
 
             return true;
@@ -237,7 +235,7 @@ public class ExerciseManager : ISearchableDataManager
     {
         dsAPI.SelectParameters[0].DefaultValue = name;
         DataView apiResult = (DataView)dsAPI.Select(DataSourceSelectArguments.Empty);
-        dsLocal.SelectCommand = "QueryFoods";
+        dsLocal.SelectCommand = "QueryExercises";
         dsLocal.SelectCommandType = SqlDataSourceCommandType.StoredProcedure;
         dsLocal.SelectParameters[0].DefaultValue = name;
         DataView result2 = (DataView)dsLocal.Select(DataSourceSelectArguments.Empty);
