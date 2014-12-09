@@ -4,21 +4,17 @@
     <section class="featured">
         <div class="content-wrapper">
             <hgroup class="title">
-                <h1><%: Title %>.</h1>
-                <h2>Modify this template to jump-start your ASP.NET application.</h2>
+                <h1><%: Title %></h1>
+                <h2>Welcome to Thrive</h2>
             </hgroup>
             <p>
-                To learn more about ASP.NET, visit <a href="http://asp.net" title="ASP.NET Website">http://asp.net</a>. 
-                The page features <mark>videos, tutorials, and samples</mark> to help you get the most from 
-                ASP.NET. If you have any questions about ASP.NET visit 
-                <a href="http://forums.asp.net/18.aspx" title="ASP.NET Forum">our forums</a>.
-            </p>
+                Many people desire a healthy weight. However, some people struggle to achieve their weight management goals. A key factor of healthy weight management is trackability. Our software provides the user with a set of tools to help track their progress and insure they achieve their weight management goals.</p>
         </div>
     </section>
 </asp:Content>
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
-    <h3>We suggest the following:</h3>
+   <!-- <h3>We suggest the following:</h3>
     <ol class="round">
         <li class="one">
             <h5>Getting Started</h5>
@@ -36,5 +32,5 @@
             You can easily find a web hosting company that offers the right mix of features and price for your applications.
             <a href="http://go.microsoft.com/fwlink/?LinkId=245143">Learn more…</a>
         </li>
-    </ol>
+    </ol>-->
 </asp:Content>
