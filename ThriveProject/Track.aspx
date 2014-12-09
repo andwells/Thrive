@@ -7,7 +7,7 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">
     <hgroup class="title">
-        <h1>Title</h1>
+        <asp:Label ID="lblCurrentAction" runat="server" Text="Track Food" Font-Bold="True" Font-Size="Large"></asp:Label>
     </hgroup>
     <asp:SqlDataSource ID="sqlDSAccess" runat="server" ConnectionString='<%$ ConnectionStrings:USDAFoods %>' ProviderName='<%$ ConnectionStrings:USDAFoods.ProviderName %>' SelectCommand="SELECT [NDB_No] AS FoodId, [Shrt_Desc] AS Name, [GmWt_Desc1] as ServingSize, [Energ_Kcal] AS Calories FROM [ABBREV] WHERE ([Shrt_Desc] LIKE '%' + ? + '%') ORDER BY [Shrt_Desc]">
         <SelectParameters>
@@ -91,22 +91,17 @@
             <asp:Parameter Name="workoutID" Type="Int32"></asp:Parameter>
         </DeleteParameters>
         <InsertParameters>
-            <asp:Parameter Name="userID" Type="Object"></asp:Parameter>
             <asp:Parameter Name="name" Type="String"></asp:Parameter>
-            <asp:Parameter Name="totalCalories" Type="Double"></asp:Parameter>
-            <asp:Parameter Name="time" Type="String"></asp:Parameter>
+            <asp:Parameter Name="totalCalories" Type="Int32"></asp:Parameter>
             <asp:Parameter Name="exercises" Type="String"></asp:Parameter>
             <asp:Parameter Name="exerciseTimes" Type="String"></asp:Parameter>
         </InsertParameters>
         <SelectParameters>
-            <asp:Parameter Name="workoutID" Type="Int32"></asp:Parameter>
         </SelectParameters>
         <UpdateParameters>
             <asp:Parameter Name="workoutId" Type="Int32"></asp:Parameter>
-            <asp:Parameter Name="userID" Type="Object"></asp:Parameter>
             <asp:Parameter Name="name" Type="String"></asp:Parameter>
             <asp:Parameter Name="totalCalories" Type="Double"></asp:Parameter>
-            <asp:Parameter Name="time" Type="String"></asp:Parameter>
             <asp:Parameter Name="exercises" Type="String"></asp:Parameter>
             <asp:Parameter Name="exerciseTimes" Type="String"></asp:Parameter>
         </UpdateParameters>
@@ -196,12 +191,30 @@
                 </asp:Panel>
                 <asp:Panel ID="pnlExerciseError" runat="server" Visible="false">
                     <asp:Label ID="lblExerciseError" runat="server" Text="The exercise you are looking for does not exist."></asp:Label>
-                    <asp:LinkButton ID="lbtnCreateExercise" runat="server" Text="Create Exercise?"></asp:LinkButton>
+                    <asp:LinkButton ID="lbtnCreateExercise" runat="server" Text="Create Exercise?" OnClick="lbtnCreateExercise_Click"></asp:LinkButton>
                 </asp:Panel>
                 <asp:UpdatePanel ID="upnlExercise" runat="server">
                     <ContentTemplate>
-                        <asp:GridView ID="gvExerciseResults" runat="server" AutoGenerateSelectButton="true" AllowPaging="true" OnPageIndexChanging="gvResults_PageIndexChanging" OnSelectedIndexChanged="gvResults_SelectedIndexChanged" OnRowDataBound="gvResults_RowDataBound"></asp:GridView>
+                        <asp:GridView ID="gvExerciseResults" runat="server" AutoGenerateSelectButton="true" AllowPaging="true" OnPageIndexChanging="gvExerciseResults_PageIndexChanging" OnSelectedIndexChanged="gvExerciseResults_SelectedIndexChanged" OnRowDataBound="gvExerciseResults_RowDataBound"></asp:GridView>
                         <br />
+                        <asp:Panel ID="pnlCreateExercise" runat="server">
+                            <h3>Create Exercise</h3>
+                            <asp:Label ID="lblSetExerciseName" runat="server" Text="Exercise Name: "></asp:Label>
+                            <asp:TextBox ID="tbSetExerciseName" runat="server" ></asp:TextBox>
+                            <asp:Label ID="lblSetCaloriesBurned" runat="server" Text="Calories Burned: "></asp:Label>
+                            <asp:TextBox ID="tbSetCaloriesBurned" runat="server" Text="Text"></asp:TextBox>
+                            <asp:Label ID="lblSetExerciseCategories" runat="server" Text="Categories (seperated by a ,): "></asp:Label>
+                            <asp:TextBox ID="tbSetExerciseCategories" runat="server"></asp:TextBox>
+                            <asp:Label ID="lblSetExerciseType" runat="server" Text="Exercise Type: "></asp:Label>
+                            <asp:TextBox ID="tbSetExerciseType" runat="server"></asp:TextBox>
+                            <asp:Label ID="lblSetExerciseHours" runat="server" Text="Hours Exercised: "></asp:Label>
+                            <asp:TextBox ID="tbSetExerciseHours" runat="server"></asp:TextBox>
+                            <asp:Label ID="lblSetExerciseMinutes" runat="server" Text="Minutes Exercised: "></asp:Label>
+                            <asp:TextBox ID="tbSetExerciseMinutes" runat="server"></asp:TextBox>
+                            <asp:Label ID="lblSetWorkoutName" runat="server" Text="Workout Name: "></asp:Label>
+                            <asp:TextBox ID="tbSetWorkoutName" runat="server"></asp:TextBox>
+                            <asp:Button ID="btnCreateExercise" runat="server" Text="Create Exercise" OnClick="btnCreateExercise_Click"/>
+                        </asp:Panel>
                         <asp:Panel ID="pnlAddExercise" runat="server" Visible="false" DefaultButton="">
                             <asp:Label ID="lblExerciseDesc" runat="server" Text="" ></asp:Label><br />
                             <asp:Label ID="lblExerciseTime" runat="server" Text="How long did you exercise?"></asp:Label><br />
@@ -211,7 +224,7 @@
                             <asp:TextBox ID="tbExerciseMinutes" runat="server"></asp:TextBox>
                             <asp:Label ID="lblWorkoutName" runat="server" Text="Workout Name"></asp:Label>
                             <asp:TextBox ID="tbWorkoutoutName" runat="server"></asp:TextBox>
-                            <asp:Button ID="btnAddExercise" runat="server" Text="Add Food"/>
+                            <asp:Button ID="btnAddExercise" runat="server" Text="Add Food" OnClick="btnAddExercise_Click"/>
                         </asp:Panel>
                         <asp:GridView ID="gvTodayWorkouts" runat="server"></asp:GridView>
                     </ContentTemplate>

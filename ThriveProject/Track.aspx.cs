@@ -56,7 +56,7 @@ public partial class Track : System.Web.UI.Page
             else
             {
                 //Adjust sqlDSLocal
-                manager = new ExerciseManager(sqlDSLocal, sqlDSExercises, ((User)Session["User"]).UserID);
+                manager = new ExerciseManager(sqlDSLocalExercise, sqlDSExercises, ((User)Session["User"]).UserID);
             }
             Session["Manager"] = manager;
         }
@@ -77,7 +77,7 @@ public partial class Track : System.Web.UI.Page
         }
         else
         {
-            workoutManager = new WorkoutManager(sqlDSLocalExercise, ((User)Session["User"]).UserID, manager);
+            workoutManager = new WorkoutManager(sqlDSWorkouts, ((User)Session["User"]).UserID, manager);
             Session["WorkoutManager"] = workoutManager;
         }
 
@@ -88,7 +88,7 @@ public partial class Track : System.Web.UI.Page
 
         if (MultiView1.ActiveViewIndex == 1)
         {
-            //Do exercise stuff
+            bindWorkouts();
         }
 
         #endregion
@@ -125,7 +125,7 @@ public partial class Track : System.Web.UI.Page
         if (Session["Workouts"] == null)
         {
             this.workouts = (Dictionary<string, Workout>)workoutManager.Search(currentDate.ToString("yyyy-MM-dd"));
-            DataTable table = buildMealsTable();
+            DataTable table = buildWorkoutsTable();
             gvTodayWorkouts.DataSource = table;
             gvTodayWorkouts.DataBind();
 
@@ -148,14 +148,22 @@ public partial class Track : System.Web.UI.Page
         if (MultiView1.ActiveViewIndex == 0)
         {
             manager = new FoodManager(sqlDSLocal, sqlDSAccess, ((User)Session["User"]).UserID);
+            lblCurrentAction.Text = "Track Food";
+            gvResults.DataSource = null;
+            gvResults.DataBind();
         }
         else
         {
-            //Adjust sqlDSLocal
             manager = new ExerciseManager(sqlDSLocalExercise, sqlDSExercises, ((User)Session["User"]).UserID);
+            lblCurrentAction.Text = "Track Exercise";
+            gvExerciseResults.DataSource = null;
+            gvExerciseResults.DataBind();
         }
-        Session["Manager"] = manager;
 
+        //Clears any saved search results
+        Session["DataView"] = null;
+
+        Session["Manager"] = manager;
     }
     protected void btnSearchFood_Click(object sender, EventArgs e)
     {
@@ -193,10 +201,10 @@ public partial class Track : System.Web.UI.Page
                 }
                 break;
             case "type":
-                manager.searchByType(query);
+                //manager.searchByType(query);
                 break;
             case "category":
-                manager.searchByCategory(query);
+                //manager.searchByCategory(query);
                 break;
             default:
                 return;
@@ -337,8 +345,6 @@ public partial class Track : System.Web.UI.Page
                 rowVals = new object[5];
                 rowVals[0] = w.Exercises[i].Name;
                 int time = (int)w.Durations[i];
-
-                
                 table.Rows.Add(rowVals);
             }
         }
@@ -390,13 +396,32 @@ public partial class Track : System.Web.UI.Page
         lblExerciseDate.Text = currentDate.ToShortDateString();
         Session["CurrentDate"] = currentDate;
         Session["Workouts"] = null;
-        //bindMeals();
+        bindWorkouts();
     }
     protected void btnMoreExerciseDate_Click(object sender, EventArgs e)
     {
-        currentDate.AddDays(1);
-        lblFoodDate.Text = currentDate.ToShortDateString();
+        if ((currentDate.AddDays(1)).CompareTo(DateTime.Today) > 0)
+        {
+            //If adding a day would go past today's date, do nothing
+            return;
+        }
+
+        currentDate = currentDate.AddDays(1);
+        if (currentDate.CompareTo(DateTime.Today) == 0)
+        {
+            lblFoodDate.Text = "Today";
+            btnMoreFoodDate.Enabled = false;
+        }
+        else
+        {
+            lblFoodDate.Text = currentDate.ToShortDateString();
+        }
+
         Session["CurrentDate"] = currentDate;
+
+        //Clear the workouts from today, so that bindWorkouts() can fetch workouts for currentDate
+        Session["Workouts"] = null;
+        bindWorkouts();
     }
     protected void btnSearchExercise_Click(object sender, EventArgs e)
     {
@@ -410,24 +435,21 @@ public partial class Track : System.Web.UI.Page
 
                 if (temp == null || temp.Table.Rows.Count == 0)
                 {
-                    // need to replace logic for exercise instead of food
-                    gvResults.Visible = false;
-                    lblError.Visible = true;
-                    lblError.Text = "The exercise you are looking for does not exist. Do you want to create it?";
-                    lbtnCreate.Visible = true;
+                    gvExerciseResults.Visible = false;
+                    pnlExerciseError.Visible = true;
                 }
                 else
                 {
-                    gvResults.Visible = true;
-                    gvResults.DataSource = temp;
-                    gvResults.DataBind();
+                    gvExerciseResults.Visible = true;
+                    gvExerciseResults.DataSource = temp;
+                    gvExerciseResults.DataBind();
                 }
                 break;
             case "type":
-                manager.searchByType(query);
+               // manager.searchByType(query);
                 break;
             case "category":
-                manager.searchByCategory(query);
+                //manager.searchByCategory(query);
                 break;
             default:
                 return;
@@ -481,5 +503,39 @@ public partial class Track : System.Web.UI.Page
         Session["MealsTable"] = table;
         gvTodayMeals.DataSource = table;
         gvTodayMeals.DataBind();
+    }
+    protected void gvExerciseResults_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        gvExerciseResults.PageIndex = e.NewPageIndex;
+        if (Session["Dataview"] != null)
+        {
+            gvExerciseResults.DataSource = (DataView)Session["Dataview"];
+        }
+        else
+        {
+            //Response.Write("Error binding DataView");
+        }
+        gvExerciseResults.DataBind();
+    }
+    protected void gvExerciseResults_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
+    protected void gvExerciseResults_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+
+    }
+    protected void lbtnCreateExercise_Click(object sender, EventArgs e)
+    {
+        
+    }
+    protected void btnCreateExercise_Click(object sender, EventArgs e)
+    {
+        pnlCreateExercise.Visible = true;
+        pnlExerciseError.Visible = false;
+    }
+    protected void btnAddExercise_Click(object sender, EventArgs e)
+    {
+
     }
 }
