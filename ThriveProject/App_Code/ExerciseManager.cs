@@ -127,9 +127,10 @@ public class ExerciseManager : ISearchableDataManager
             int caloriesBurned = 0;
             String type = ""; // (an)aerobic
 
-            id = (int)results.Table.Rows[0][0];
+            
             if (isNotOfficialExercise)
             {
+                id = (int)results.Table.Rows[0][0];
                 name = (String)results.Table.Rows[0][2];
                 caloriesBurned = (int)results.Table.Rows[0][3];
                 if ((bool)results.Table.Rows[0][4] == true)
@@ -144,15 +145,16 @@ public class ExerciseManager : ISearchableDataManager
             }
             else
             {
+                id = (short)results.Table.Rows[0][0];
                 name = (String)results.Table.Rows[0][3];
-                metric = (int)results.Table.Rows[0][1];
+                metric = (double)results.Table.Rows[0][1];
                 // TODO: Pull user weight. For now, substituting average weight of 150 lbs and minutes of 30
                 // (metric * 3.5 * (weight/2.2046) / 200) * minutes burned = total calories burned
                 int weight = 150;
                 int minutes = 30;
                 caloriesBurned = (int)((metric * 3.5 * (weight / 2.2046) / 200) * minutes);
                 categories.AddRange(((String)results.Table.Rows[0][2]).Split(','));
-                type = (String)results.Table.Rows[0][4];
+                //type = (String)results.Table.Rows[0][4];
             }
             return new Exercise(id, caloriesBurned, name, categories, type);
         }

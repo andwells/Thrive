@@ -231,7 +231,7 @@ public class WorkoutManager : IDataManager
             String exerName = (String)x.Table.Rows[i][2];
             
             DateTime exerDate = (DateTime)x.Table.Rows[i][3];
-            double totalCalories = Convert.ToInt32((Double)x.Table.Rows[i][4]);
+            double totalCalories = Convert.ToInt32((Double)x.Table.Rows[i][1]);
 
             Workout w = new Workout(exerID, exerG, (int)totalCalories, exerName, exerDate, exercises, durations);
 

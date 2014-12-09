@@ -67,7 +67,7 @@ public partial class Track : System.Web.UI.Page
         }
         else
         {
-            mealManager = new MealManager(dsMeals, ((User)Session["User"]).UserID, manager);
+            mealManager = new MealManager(dsMeals, ((User)Session["User"]).UserID, new FoodManager(sqlDSLocal, sqlDSAccess, ((User)Session["User"]).UserID));
             Session["MealManager"] = mealManager;
         }
 
@@ -77,7 +77,7 @@ public partial class Track : System.Web.UI.Page
         }
         else
         {
-            workoutManager = new WorkoutManager(sqlDSWorkouts, ((User)Session["User"]).UserID, manager);
+            workoutManager = new WorkoutManager(sqlDSWorkouts, ((User)Session["User"]).UserID, new ExerciseManager(sqlDSLocalExercise, sqlDSExercises, ((User)Session["User"]).UserID));
             Session["WorkoutManager"] = workoutManager;
         }
 
