@@ -23,6 +23,11 @@ public partial class vc2Dashboard : System.Web.UI.Page
     int[] febLongMonth = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 };
     int[] febMonth     = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28 };
 
+    int[] foodArray = { 1400, 2300, 1987, 2100, 1930, 1740, 200, 300, 400, 500, 600, 700, 800, 900, 300, 500, 700, 500, 400, 100, 2000, 1400, 2300, 1987, 2100, 1930, 1740, 200, 300, 400, 500, 600, 700, 800, 900, 300, 500, 700, 500, 400, 100, 2000 };
+    int[] exerciseArray = { 800, 1300, 700, 1700, 2250, 700, 650, 999, 1249, 900, 1400, 400, 600, 900, 400, 300, 500, 600, 300, 200, 1000, 1400, 400, 600, 900, 400, 300, 500, 600, 300, 200, 1000 };
+    int[] waterArray = { 12, 20, 19, 7, 13, 8, 17, 15, 16, 13, 9, 12, 8, 11, 12, 20, 19, 7, 13, 8, 17, 15, 16, 13, 9, 12, 8, 11, 8, 17, 15, 16, 13, 9, 12, 8, 11 };
+    int[] weightArray = { 230, 228, 231, 227, 228, 224, 221, 226, 223, 220, 219, 216, 214, 215, 219, 213, 210, 205, 207, 209, 215, 219, 225, 227, 233, 231, 235, 240 };
+
     //months with 31 days: 0-based--- 0, 2, 4, 6, 7, 9, 11      1-based--- 1, 3, 5, 7, 8, 10, 12
     //months with 30 days: 0-based--- 3, 5, 8, 10,              1-based--- 4, 6, 9, 11
     //feb with 28 days                 index == 1                              1-based--- 2
@@ -186,9 +191,26 @@ public partial class vc2Dashboard : System.Web.UI.Page
             ddlMonth.DataBind();
             ddlYear.DataBind();
 
-            ddlMonth.SelectedIndex = today.Month - 1;
-            ddlYear.SelectedIndex  = today.Year - 2012;
-            ddlDay.SelectedIndex   = today.Day - 8;
+            int indexMonth = today.Month - 1;
+            int indexYear = today.Year - 2012;
+            int indexDay = today.Day - 1;
+
+
+            // check over this logic
+            if((indexDay -= 7) < 0)
+            {
+                if (--indexMonth < 0)
+                {
+                    indexYear--;
+                }
+            }
+
+            // index variables used here and only here
+            ddlMonth.SelectedIndex = indexMonth;
+            ddlYear.SelectedIndex  = indexYear;
+            ddlDay.SelectedIndex   = indexDay;
+
+
 
             /*
              * 
@@ -214,13 +236,6 @@ public partial class vc2Dashboard : System.Web.UI.Page
             //because we will start at year 2014, at most it could get pushed back to 2013
             //and 2013 is valid. Only problem would be from 2012 to 2011 since
             //2011 is not in the dropdown box.
-
-            int endMonthSelection = today.Month - 1, 
-                endDaySelection   = today.Day - 1, 
-                endYearSelection  = today.Year - 2012;
-
-
-            //insert logic hereerere.
             
 
             ddlEndMonth.DataSource = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
@@ -233,7 +248,7 @@ public partial class vc2Dashboard : System.Web.UI.Page
 
             ddlEndMonth.SelectedIndex = today.Month - 1;
             ddlEndYear.SelectedIndex  = today.Year - 2012;
-            ddlEndDay.SelectedIndex   = today.Day + 6;
+            ddlEndDay.SelectedIndex   = today.Day - 1;
 
             previous = new DateTime(ddlYear.SelectedIndex + 2012, ddlMonth.SelectedIndex + 1, ddlDay.SelectedIndex + 1);
             previousEnd = new DateTime(ddlEndYear.SelectedIndex + 2012, ddlEndMonth.SelectedIndex + 1, ddlEndDay.SelectedIndex + 1);
@@ -259,11 +274,6 @@ public partial class vc2Dashboard : System.Web.UI.Page
         DateTime maxDate = DateTime.Now;
         Chart1.ChartAreas[0].AxisX.Minimum = startDate.ToOADate();
         Chart1.ChartAreas[0].AxisX.Maximum = maxDate.ToOADate();
-
-        int[] foodArray = { 1400, 2300, 1987, 2100, 1930, 1740, 200, 300, 400, 500, 600, 700, 800, 900, 300, 500, 700, 500, 400, 100, 2000, 1400, 2300, 1987, 2100, 1930, 1740, 200, 300, 400, 500, 600, 700, 800, 900, 300, 500, 700, 500, 400, 100, 2000 };
-        int[] exerciseArray = { 800, 1300, 700, 1700, 2250, 700, 650, 999, 1249, 900, 1400, 400, 600, 900, 400, 300, 500, 600, 300, 200, 1000, 1400, 400, 600, 900, 400, 300, 500, 600, 300, 200, 1000 };
-        int[] waterArray = { 12, 20, 19, 7, 13, 8, 17, 15, 16, 13, 9, 12, 8, 11, 12, 20, 19, 7, 13, 8, 17, 15, 16, 13, 9, 12, 8, 11, 8, 17, 15, 16, 13, 9, 12, 8, 11 };
-        int[] weightArray = { 230, 228, 231, 227, 228, 224, 221, 226, 223, 220, 219, 216, 214, 215, 219, 213, 210, 205, 207, 209, 215, 219, 225, 227, 233, 231, 235, 240 };
 
         for (int i = 0; i < foodArray.Length; i++)
             Chart1.Series["Food"].Points.AddXY(startDate.AddDays(i - 21), foodArray[i]);
@@ -372,8 +382,58 @@ public partial class vc2Dashboard : System.Web.UI.Page
 
         Chart1.ChartAreas[0].AxisX.Minimum = start.ToOADate();
         Chart1.ChartAreas[0].AxisX.Maximum = end.ToOADate();
-
         Chart1.ChartAreas[0].AxisX.Interval = interval;
+        
+        //current array is the array that the graph is currently opperating on
+        int[] currentArray;
+
+        if (ddlChoice.SelectedIndex == 0 || ddlChoice.SelectedIndex == 1)
+        {
+            currentArray = new int[foodArray.Length + exerciseArray.Length];
+            foodArray.CopyTo(currentArray, 0);
+            exerciseArray.CopyTo(currentArray, foodArray.Length);
+        } 
+        else if (ddlChoice.SelectedIndex == 2)
+        {
+            currentArray = waterArray;
+        }
+        else
+        {
+            currentArray = weightArray;
+        }
+
+        int startX = (int)Chart1.ChartAreas[0].AxisX.Minimum;
+        int endX = (int)Chart1.ChartAreas[0].AxisX.Maximum;
+
+        if((endX + 1) >= currentArray.Length)
+        {
+            endX = currentArray.Length - 1;
+        }
+
+        // find the min and max values of the current array
+        int min, max;
+        min = max = currentArray[0];
+
+        for (int i = startX; startX <= endX; startX += interval)
+        {
+            if(currentArray[i] < min)
+            {
+                min = currentArray[i];
+            }
+            if(currentArray[i] > max)
+            {
+                max = currentArray[i];
+            }
+        }
+
+        // set the graph y-axis min and max to be relative to the min and max of the data
+        min -= (int)(min * .10);
+        min -= min % 10;
+        max += (int)(max * .10);
+        max += 10 - (max % 10);
+
+        Chart1.ChartAreas[0].AxisY.Minimum = min;
+        Chart1.ChartAreas[0].AxisY.Maximum = max;
 
         if (interval == 30)
         {
