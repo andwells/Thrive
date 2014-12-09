@@ -4,8 +4,8 @@
     <section class="featured">
         <div class="content-wrapper">
             <hgroup class="title">
-                <h1><%: Title %></h1>
-                <h2>Welcome to Thrive</h2>
+                <!--<h1><%: Title %></h1>-->
+                <h1>Welcome to Thrive</h1>
             </hgroup>
             <p>
                 Many people desire a healthy weight. However, some people struggle to achieve their weight management goals. A key factor of healthy weight management is trackability. Our software provides the user with a set of tools to help track their progress and insure they achieve their weight management goals.</p>
@@ -14,7 +14,7 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
-   <!-- <h3>We suggest the following:</h3>
+    <!-- <h3>We suggest the following:</h3>
     <ol class="round">
         <li class="one">
             <h5>Getting Started</h5>

@@ -39,7 +39,7 @@
             <div class="float-left">
                 <p class="site-title">
                     <a runat="server" href="~/">
-                        <img src=<%=ResolveClientUrl("~/Images/thrive-inverted.jpg")%> width="216" height="98"/>
+                        <img src=<%=ResolveClientUrl("~/Images/thrive-inverted.jpg")%> width="200" height="200"/>
                     </a>
                 </p>
             </div>
