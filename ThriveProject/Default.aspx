@@ -14,6 +14,7 @@
 </asp:Content>
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
+    <img src="Images/fitness.jpg" width="980"/>
     <!-- <h3>We suggest the following:</h3>
     <ol class="round">
         <li class="one">
