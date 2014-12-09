@@ -39,7 +39,7 @@
             <div class="float-left">
                 <p class="site-title">
                     <a runat="server" href="~/">
-                        <img src=<%=ResolveClientUrl("~/Images/thrive-inverted.jpg")%> width="100" height="100"/>
+                        <img src=<%=ResolveClientUrl("~/Images/thrive-inverted.jpg")%> width="300" height="300"/>
                     </a>
                 </p>
             </div>
@@ -64,10 +64,10 @@
                 </section>
                 <nav>
                     <ul id="menu">
-                        <li><a runat="server" href="~/">Home</a></li>
+                        <li><a runat="server" href="~/Dashboard">Home</a></li>
                         <li><a runat="server" href="~/About">About</a></li>
-                        <li><a runat="server" href="~/Contact">Contact</a></li>
                         <li><a runat="server" href="~/Track" visible="false" id="foodNav">Track</a></li>
+                        <li><a id="A1" runat="server" href="~/Contact">Contact</a></li>
                     </ul>
                 </nav>
             </div>
