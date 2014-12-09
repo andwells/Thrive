@@ -197,7 +197,7 @@
                     <ContentTemplate>
                         <asp:GridView ID="gvExerciseResults" runat="server" AutoGenerateSelectButton="true" AllowPaging="true" OnPageIndexChanging="gvExerciseResults_PageIndexChanging" OnSelectedIndexChanged="gvExerciseResults_SelectedIndexChanged" OnRowDataBound="gvExerciseResults_RowDataBound"></asp:GridView>
                         <br />
-                        <asp:Panel ID="pnlCreateExercise" runat="server">
+                        <asp:Panel ID="pnlCreateExercise" runat="server" Visible="false">
                             <h3>Create Exercise</h3>
                             <asp:Label ID="lblSetExerciseName" runat="server" Text="Exercise Name: "></asp:Label>
                             <asp:TextBox ID="tbSetExerciseName" runat="server" ></asp:TextBox>

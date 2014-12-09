@@ -116,7 +116,7 @@ public class MealManager : IDataManager
 
             using (IDbCommand com = ConnectionFactory.GetDBConnection("local"))
             {
-                com.CommandText = "SELECT MAX(Meals.MealId) FROM Meal";
+                com.CommandText = "SELECT MAX(Meals.MealId) FROM Meals";
                 com.Connection.Open();
                 using (IDataReader i = com.ExecuteReader())
                 {

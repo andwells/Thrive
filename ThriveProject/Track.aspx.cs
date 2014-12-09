@@ -93,7 +93,6 @@ public partial class Track : System.Web.UI.Page
 
         #endregion
     }
-
     private void bindMeals()
     {
         if (Session["Meals"] == null)
@@ -119,7 +118,6 @@ public partial class Track : System.Web.UI.Page
             gvTodayMeals.DataBind();
         }
     }
-
     private void bindWorkouts()
     {
         if (Session["Workouts"] == null)
@@ -141,7 +139,6 @@ public partial class Track : System.Web.UI.Page
             gvTodayWorkouts.DataBind();
         }
     }
-
     protected void Menu1_MenuItemClick(object sender, MenuEventArgs e)
     {
         MultiView1.ActiveViewIndex = Int32.Parse(e.Item.Value);
@@ -151,6 +148,7 @@ public partial class Track : System.Web.UI.Page
             lblCurrentAction.Text = "Track Food";
             gvResults.DataSource = null;
             gvResults.DataBind();
+            bindMeals();
         }
         else
         {
@@ -158,11 +156,11 @@ public partial class Track : System.Web.UI.Page
             lblCurrentAction.Text = "Track Exercise";
             gvExerciseResults.DataSource = null;
             gvExerciseResults.DataBind();
+            bindWorkouts();
         }
 
         //Clears any saved search results
         Session["DataView"] = null;
-
         Session["Manager"] = manager;
     }
     protected void btnSearchFood_Click(object sender, EventArgs e)
@@ -455,7 +453,6 @@ public partial class Track : System.Web.UI.Page
                 return;
         }
     }
-
     protected void lbtnCreate_Click(object sender, EventArgs e)
     {
         pnlCreateFood.Visible = true;
@@ -493,7 +490,8 @@ public partial class Track : System.Web.UI.Page
         {
             temp = new Meal(mealName, currentDate);
             temp.addFood(x, servings);
-            mealManager.Add(temp);
+            int anID = (int)mealManager.Add(temp);
+            temp = new Meal(anID, ((User)Session["User"]).UserID, temp.TotalCalories, temp.Name, temp.Time, temp.Foods, temp.Servings);
             meals.Add(temp.Name, temp);
         }
         Session["CurrentMeal"] = temp;
@@ -519,7 +517,44 @@ public partial class Track : System.Web.UI.Page
     }
     protected void gvExerciseResults_SelectedIndexChanged(object sender, EventArgs e)
     {
+        /*The reason that there are no checks to see if the DataViewExists in Session
+        is because the DataView has to exists for the SelectedIndexChanged Event to fire*/
+        DataRow row = ((DataView)Session["DataView"]).Table.Rows[gvExerciseResults.SelectedRow.DataItemIndex];
 
+        int id;
+        double caloriesBurned;
+        String name, type = "";
+        List<String> categories = new List<String>();
+
+        id = (short)row[0];
+        
+
+        if (row.Table.Columns.Count > 5)
+        {
+            name = (string)row[2];
+            caloriesBurned = (int)row[3];
+            type = (!row[4].Equals(DBNull.Value)) ? (String)row[4] : "";
+            if (!row[5].Equals(DBNull.Value))
+            {
+                categories.AddRange(((String)row[5]).Split(','));
+            }
+        }
+        else
+        {
+            
+            caloriesBurned = (double)row[1];
+            categories.Add((string)row[2]);
+            name = (string)row[3];
+            caloriesBurned = (caloriesBurned * 3.5 * (((User)Session["User"]).Weight / 2.2046) / 200);
+        }
+
+        Exercise temp = new Exercise(id, (int)caloriesBurned, name, categories, type);
+        
+        Session["SelectedExercise"] = temp;
+
+        lblExerciseDesc.Text = temp.Name;
+        gvExerciseResults.Visible = false;
+        pnlAddExercise.Visible = true;
     }
     protected void gvExerciseResults_RowDataBound(object sender, GridViewRowEventArgs e)
     {
@@ -527,15 +562,82 @@ public partial class Track : System.Web.UI.Page
     }
     protected void lbtnCreateExercise_Click(object sender, EventArgs e)
     {
-        
-    }
-    protected void btnCreateExercise_Click(object sender, EventArgs e)
-    {
         pnlCreateExercise.Visible = true;
         pnlExerciseError.Visible = false;
     }
+    protected void btnCreateExercise_Click(object sender, EventArgs e)
+    {
+        Exercise x;
+        String name = tbSetExerciseName.Text;
+        int caloriesBurned = Int32.Parse(tbSetCaloriesBurned.Text);
+        List<String> catorgies = new List<String>();
+        char[] delim = { ',' };
+        catorgies.AddRange(tbSetExerciseCategories.Text.Split(delim, StringSplitOptions.RemoveEmptyEntries));
+        String type = tbSetExerciseType.Text;
+        int time = (Int32.Parse(tbSetExerciseHours.Text) * 60) + Int32.Parse(tbSetExerciseMinutes.Text);
+
+        x = new Exercise(0, caloriesBurned, name, catorgies, type);
+        int newID = (int)manager.Add(x);
+        x = new Exercise(newID, x.CaloriesBurned, x.Name, x.Category, x.Type);
+
+        String workoutName = tbSetWorkoutName.Text;
+        Workout temp;
+
+
+        //add check to make sure meal for certain day with that name doesn't already exist
+        if (workouts.ContainsKey(workoutName))
+        {
+            temp = workouts[workoutName];
+            temp.addExercise(x, time);
+            workoutManager.Update(temp, "id");
+            workouts[temp.Name] = temp;
+        }
+        else
+        {
+            temp = new Workout(workoutName, currentDate);
+            temp.addExercise(x, time);
+            int anID = (int)workoutManager.Add(temp);
+            temp = new Workout(anID, ((User)Session["User"]).UserID, temp.TotalCalories, temp.Name, temp.Time, temp.Exercises, temp.Durations);
+            workouts.Add(temp.Name, temp);
+        }
+        Session["CurrentWorkout"] = temp;
+
+        //Add logic to add meals to gridview
+        DataTable table = buildWorkoutsTable();
+        Session["WorkoutsTable"] = table;
+        gvTodayWorkouts.DataSource = table;
+        gvTodayWorkouts.DataBind();
+    }
     protected void btnAddExercise_Click(object sender, EventArgs e)
     {
+        int time = (Int32.Parse(tbExerciseHours.Text) * 60) + Int32.Parse(tbExerciseMinutes.Text);
+        String workoutName = tbEnterMealName.Text;
+        Workout temp;
+        
+        //checks to make sure workout for certain day with that name doesn't already exist
+        if (workouts.ContainsKey(workoutName))
+        {
+            temp = workouts[workoutName];
+            temp.addExercise((Exercise)Session["SelectedExercise"], time);
+            workoutManager.Update(temp, "id");
+            workouts[temp.Name] = temp;
+        }
+        else
+        {
+            temp = new Workout(workoutName, currentDate);
+            temp.addExercise((Exercise)Session["SelectedExercise"], time);
+            int newID = (int)workoutManager.Add(temp);
+            temp = new Workout(newID, ((User)Session["User"]).UserID, temp.TotalCalories, temp.Name, temp.Time, temp.Exercises, temp.Durations);
+            workouts.Add(temp.Name, temp);
+        }
+        Session["CurrentMeal"] = temp;
 
+        //Add logic to add meals to gridview
+        DataTable table = buildWorkoutsTable();
+        Session["WorkoutsTable"] = table;
+
+        gvTodayWorkouts.DataSource = table;
+        gvTodayWorkouts.DataBind();
+        pnlAddExercise.Visible = false;
     }
 }

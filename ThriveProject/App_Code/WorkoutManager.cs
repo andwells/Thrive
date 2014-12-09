@@ -115,9 +115,20 @@ public class WorkoutManager : IDataManager
                 dsLocal.InsertParameters[6].DefaultValue = temp.Time.ToString("yyyy-MM-dd");
             }
             dsLocal.Insert();
-            return true;
+
+            using (IDbCommand com = ConnectionFactory.GetDBConnection("local"))
+            {
+                com.CommandText = "SELECT MAX(Workouts.WorkoutId) FROM Workouts";
+                com.Connection.Open();
+                using (IDataReader i = com.ExecuteReader())
+                {
+                    i.Read();
+                    return i.GetInt32(0);
+                }
+
+            }
         }
-        return false;
+        return -1;
     }
 
     object IDataManager.Update(object u, string id)
@@ -200,8 +211,8 @@ public class WorkoutManager : IDataManager
         {
             char[] delim = { ',' };
             List<Exercise> exercises = new List<Exercise>();
-            string[] exerciseIDs = ((String)x.Table.Rows[i][5]).Split(delim, StringSplitOptions.RemoveEmptyEntries);
-            string[] strDurations = ((String)x.Table.Rows[i][6]).Split(delim, StringSplitOptions.RemoveEmptyEntries);
+            string[] exerciseIDs = ((String)x.Table.Rows[i][4]).Split(delim, StringSplitOptions.RemoveEmptyEntries);
+            string[] strDurations = ((String)x.Table.Rows[i][5]).Split(delim, StringSplitOptions.RemoveEmptyEntries);
             List<int> durations = new List<int>();
 
             foreach (String strDur in strDurations)
@@ -211,16 +222,18 @@ public class WorkoutManager : IDataManager
 
             foreach (String eID in exerciseIDs)
             {
+                /////////Check after this line
                 exercises.Add((Exercise)exercisesManager.Get(eID));
             }
 
             int exerID = (int)x.Table.Rows[i][0];
-            Guid exerG = (Guid)x.Table.Rows[i][1];
+            Guid exerG = (Guid)x.Table.Rows[i][6];
             String exerName = (String)x.Table.Rows[i][2];
-            int totalCalories = Convert.ToInt32((Double)x.Table.Rows[i][3]);
-            DateTime exerDate = (DateTime)x.Table.Rows[i][4];
+            
+            DateTime exerDate = (DateTime)x.Table.Rows[i][3];
+            double totalCalories = Convert.ToInt32((Double)x.Table.Rows[i][4]);
 
-            Workout w = new Workout(exerID, exerG, totalCalories, exerName, exerDate, exercises, durations);
+            Workout w = new Workout(exerID, exerG, (int)totalCalories, exerName, exerDate, exercises, durations);
 
             tempWorkouts.Add(w.Name, w);
         }

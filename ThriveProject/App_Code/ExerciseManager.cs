@@ -61,7 +61,6 @@ public class ExerciseManager : ISearchableDataManager
     /// <param name="g"></param>
     /// <returns></returns>
     /// 
-    //WARNING!! This method is broken! Needs to be re-written to adjust for checking the range of the ID!
     object IDataManager.Get(object g)
     {
         if (g.GetType().Name.Equals("String"))
@@ -99,8 +98,8 @@ public class ExerciseManager : ISearchableDataManager
             {
                 tempDS = dsAPI;
                 String backQ = tempDS.SelectCommand;
-                tempDS.SelectCommand = "SELECT Exercises.ID AS exerciseID, Exercises.Metric AS Metric, Exercises.Category AS Categories, Exercises.Description AS Name, Exercises.Type AS Type FROM Exercises WHERE (((Exercises.ID)=[?])) ORDER BY Exercises.Description;";
-
+                tempDS.SelectCommand = "SELECT Exercises.* FROM Exercises Where(((ID)=[?]))";
+                ///////Check after this line
                 ParameterCollection tempCol = new ParameterCollection();
                 foreach (Parameter p in tempDS.SelectParameters)
                 {
