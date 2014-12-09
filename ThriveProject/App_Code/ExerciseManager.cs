@@ -167,16 +167,23 @@ public class ExerciseManager : ISearchableDataManager
         if (a.GetType().Name.Equals("Exercise"))
         {
             Exercise temp = (Exercise)a;
-            dsLocal.InsertParameters[0].DefaultValue = id.ToString();
-            dsLocal.InsertParameters[1].DefaultValue = temp.Name;
-            dsLocal.InsertParameters[2].DefaultValue = temp.CaloriesBurned.ToString();
+            dsLocal.InsertParameters[0].DefaultValue = temp.Name;
+            dsLocal.InsertParameters[1].DefaultValue = temp.CaloriesBurned.ToString();
             bool isAerobic = true;
             if (temp.Type.CompareTo("Anaerobic") == 0)
             {
                 isAerobic = false;
             }
-            dsLocal.InsertParameters[3].DefaultValue = isAerobic.ToString();
-            dsLocal.InsertParameters[4].DefaultValue = temp.Category.ToString();
+            dsLocal.InsertParameters[2].DefaultValue = isAerobic.ToString();
+            dsLocal.InsertParameters[3].DefaultValue = temp.Category.ToString();
+            if (dsLocal.InsertParameters.Count == 4)
+            {
+                dsLocal.InsertParameters.Add("userId", id.ToString());
+            }
+            else
+            {
+                dsLocal.InsertParameters[5].DefaultValue = id.ToString();
+            }
             dsLocal.Insert();
             //Add logic to get return value of stored proc
 

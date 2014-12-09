@@ -1,4 +1,4 @@
-<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="VC5-Dashboard.aspx.cs" Inherits="vc2Dashboard" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="VC8-Dashboard.aspx.cs" Inherits="vc2Dashboard" %>
 
 <%@ Register assembly="System.Web.DataVisualization, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" namespace="System.Web.UI.DataVisualization.Charting" tagprefix="asp" %>
 
@@ -39,13 +39,13 @@
         </tr>
         <tr>
             <td>
-                 <asp:Button ID="btn_daily" runat="server" Text="Update" OnClick="btn_daily_Click"/>
+                 <asp:Button ID="btn_daily" runat="server" Text="Update"/>
             </td>
         </tr>
     </table>
 
     <br />
-<asp:Chart ID="Chart1" runat="server" Width="600px" OnLoad="Chart1_Load" >
+<asp:Chart ID="Chart1" runat="server" Width="600px" >
     <Series>
         
         <asp:Series Name="Food" Color="DarkRed" BorderWidth="3" ChartType="Line" LegendText="Foodz" MarkerBorderColor="White" Legend="Legend1" XValueType="DateTime"></asp:Series>

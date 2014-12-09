@@ -70,7 +70,6 @@
             <asp:Parameter Name="ExerciseId" Type="Int32"></asp:Parameter>
         </DeleteParameters>
         <InsertParameters>
-            <asp:Parameter Name="UserId" Type="Object"></asp:Parameter>
             <asp:Parameter Name="Name" Type="String"></asp:Parameter>
             <asp:Parameter Name="CaloriesBurned" Type="Int32"></asp:Parameter>
             <asp:Parameter Name="IsAerobic" Type="Boolean"></asp:Parameter>
