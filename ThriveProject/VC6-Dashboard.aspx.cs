@@ -745,4 +745,8 @@ public partial class vc2Dashboard : System.Web.UI.Page
         Chart1.ChartAreas[0].AxisY.Interval = 25;
         Chart1.Series["Weight"].BorderWidth = 3;
     }
+    protected void btn_daily_Click(object sender, EventArgs e)
+    {
+
+    }
 }

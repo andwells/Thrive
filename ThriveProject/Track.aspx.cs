@@ -610,7 +610,9 @@ public partial class Track : System.Web.UI.Page
     }
     protected void btnAddExercise_Click(object sender, EventArgs e)
     {
-        int time = (Int32.Parse(tbExerciseHours.Text) * 60) + Int32.Parse(tbExerciseMinutes.Text);
+        int hours = Convert.ToInt32(tbExerciseHours.Text);
+        int mins = Convert.ToInt32(tbExerciseMinutes.Text);
+        int time = hours * 60 + mins;
         String workoutName = tbEnterMealName.Text;
         Workout temp;
         

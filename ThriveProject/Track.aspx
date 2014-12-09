@@ -7,7 +7,9 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">
     <hgroup class="title">
+        </hgroup>
         <asp:Label ID="lblCurrentAction" runat="server" Text="Track Food" Font-Bold="True" Font-Size="Large"></asp:Label>
+    <hgroup>
     </hgroup>
     <asp:SqlDataSource ID="sqlDSAccess" runat="server" ConnectionString='<%$ ConnectionStrings:USDAFoods %>' ProviderName='<%$ ConnectionStrings:USDAFoods.ProviderName %>' SelectCommand="SELECT [NDB_No] AS FoodId, [Shrt_Desc] AS Name, [GmWt_Desc1] as ServingSize, [Energ_Kcal] AS Calories FROM [ABBREV] WHERE ([Shrt_Desc] LIKE '%' + ? + '%') ORDER BY [Shrt_Desc]">
         <SelectParameters>
@@ -222,9 +224,9 @@
                             <asp:TextBox ID="tbExerciseHours" runat="server"></asp:TextBox>
                             <asp:Label ID="lblExerciseMinutes" runat="server" Text="Minutes: "></asp:Label>
                             <asp:TextBox ID="tbExerciseMinutes" runat="server"></asp:TextBox>
-                            <asp:Label ID="lblWorkoutName" runat="server" Text="Workout Name"></asp:Label>
+                            <asp:Label ID="lblWorkoutName" runat="server" Text="Workout Name: "></asp:Label>
                             <asp:TextBox ID="tbWorkoutoutName" runat="server"></asp:TextBox>
-                            <asp:Button ID="btnAddExercise" runat="server" Text="Add Food" OnClick="btnAddExercise_Click"/>
+                            <asp:Button ID="btnAddExercise" runat="server" Text="Add Exercise" OnClick="btnAddExercise_Click"/>
                         </asp:Panel>
                         <asp:GridView ID="gvTodayWorkouts" runat="server"></asp:GridView>
                     </ContentTemplate>
@@ -233,4 +235,3 @@
         </asp:MultiView>
     </section>
 </asp:Content>
-

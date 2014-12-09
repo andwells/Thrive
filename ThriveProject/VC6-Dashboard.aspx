@@ -7,7 +7,20 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="FeaturedContent" Runat="Server">
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" Runat="Server">
-
+    <table>
+        <tr><td>
+            <asp:Label ID="lbl_consumed" runat="server" Text="Calories Consumed" ></asp:Label>
+            <asp:Label ID="lbl_burned" runat="server" Text="Calories Burned"></asp:Label>
+        </td></tr>
+        <tr><td>
+            <asp:TextBox ID="tb_weight" runat="server" Text="0"></asp:TextBox>
+            <asp:TextBox ID="tb_water" runat="server" Text="0"></asp:TextBox>
+            <asp:TextBox ID="tb_sleep" runat="server" Text="0"></asp:TextBox>
+        </td></tr>
+        <tr><td>
+            <asp:Button ID="btn_daily" runat="server" Text="Update" OnClick="btn_daily_Click"/>
+        </td></tr>
+    </table>
 <!--
 <add name="ChartImageHandler" preCondition="integratedMode" verb="GET,HEAD,POST" path="ChartImg.axd" type="System.Web.UI.DataVisualization.Charting.ChartHttpHandler, System.Web.DataVisualization, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
 -->
